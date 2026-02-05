@@ -4,13 +4,14 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { config } from './config/env.js';
 import { createTables } from './database/schema.js';
+import db from './config/database.js';
 import authRoutes from './routes/auth.js';
 import progressRoutes from './routes/progress.js';
 
 const app = express();
 
-// Initialize database
-createTables(await import('./config/database.js').then(m => m.default));
+// Initialize database tables
+await createTables(db);
 
 // Security middleware
 app.use(helmet());

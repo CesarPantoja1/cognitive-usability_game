@@ -1,61 +1,52 @@
-import db from '../config/database.js';
+import { pool } from '../config/database.js';
 
 export class AccessibilitySettings {
-  static getByUserId(userId) {
-    const stmt = db.prepare('SELECT * FROM accessibility_settings WHERE user_id = ?');
-    const settings = stmt.get(userId);
-
-    if (!settings) return null;
-
-    // Convert SQLite boolean (0/1) to JavaScript boolean
-    return {
-      ...settings,
-      high_contrast: Boolean(settings.high_contrast),
-      subtitles_enabled: Boolean(settings.subtitles_enabled),
-      sound_enabled: Boolean(settings.sound_enabled),
-      reduced_motion: Boolean(settings.reduced_motion)
-    };
+  static async getByUserId(userId) {
+    const result = await pool.query(
+      'SELECT * FROM accessibility_settings WHERE user_id = $1',
+      [userId]
+    );
+    return result.rows[0] || null;
   }
 
-  static update(userId, settings) {
+  static async update(userId, settings) {
     const fields = [];
     const values = [];
+    let paramIndex = 1;
 
     if (settings.highContrast !== undefined) {
-      fields.push('high_contrast = ?');
-      values.push(settings.highContrast ? 1 : 0);
+      fields.push(`high_contrast = $${paramIndex++}`);
+      values.push(settings.highContrast);
     }
 
     if (settings.subtitlesEnabled !== undefined) {
-      fields.push('subtitles_enabled = ?');
-      values.push(settings.subtitlesEnabled ? 1 : 0);
+      fields.push(`subtitles_enabled = $${paramIndex++}`);
+      values.push(settings.subtitlesEnabled);
     }
 
     if (settings.soundEnabled !== undefined) {
-      fields.push('sound_enabled = ?');
-      values.push(settings.soundEnabled ? 1 : 0);
+      fields.push(`sound_enabled = $${paramIndex++}`);
+      values.push(settings.soundEnabled);
     }
 
     if (settings.fontSize !== undefined) {
-      fields.push('font_size = ?');
+      fields.push(`font_size = $${paramIndex++}`);
       values.push(settings.fontSize);
     }
 
     if (settings.reducedMotion !== undefined) {
-      fields.push('reduced_motion = ?');
-      values.push(settings.reducedMotion ? 1 : 0);
+      fields.push(`reduced_motion = $${paramIndex++}`);
+      values.push(settings.reducedMotion);
     }
 
-    fields.push('updated_at = CURRENT_TIMESTAMP');
+    fields.push(`updated_at = CURRENT_TIMESTAMP`);
     values.push(userId);
 
-    const stmt = db.prepare(`
-      UPDATE accessibility_settings
-      SET ${fields.join(', ')}
-      WHERE user_id = ?
-    `);
+    await pool.query(
+      `UPDATE accessibility_settings SET ${fields.join(', ')} WHERE user_id = $${paramIndex}`,
+      values
+    );
 
-    stmt.run(...values);
     return this.getByUserId(userId);
   }
 }

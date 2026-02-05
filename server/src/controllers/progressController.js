@@ -5,9 +5,9 @@ import { AccessibilitySettings } from '../models/AccessibilitySettings.js';
 
 export const getProgress = async (req, res) => {
   try {
-    const progress = Progress.getByUserId(req.userId);
-    const sessions = GameSession.findByUserId(req.userId, 50);
-    const achievements = Achievement.findByUserId(req.userId);
+    const progress = await Progress.getByUserId(req.userId);
+    const sessions = await GameSession.findByUserId(req.userId, 50);
+    const achievements = await Achievement.findByUserId(req.userId);
 
     res.json({
       success: true,
@@ -33,11 +33,11 @@ export const addGameSession = async (req, res) => {
       userId: req.userId
     };
 
-    const session = GameSession.create(sessionData);
+    const session = await GameSession.create(sessionData);
 
     // Update progress
-    Progress.incrementGamesPlayed(req.userId);
-    const levelUpResult = Progress.addPoints(req.userId, sessionData.score);
+    await Progress.incrementGamesPlayed(req.userId);
+    const levelUpResult = await Progress.addPoints(req.userId, sessionData.score);
 
     // Check for achievements
     const newAchievements = await checkAndAwardAchievements(req.userId);
@@ -63,7 +63,7 @@ export const addGameSession = async (req, res) => {
 
 export const getStats = async (req, res) => {
   try {
-    const stats = GameSession.getStats(req.userId);
+    const stats = await GameSession.getStats(req.userId);
 
     res.json({
       success: true,
@@ -82,9 +82,9 @@ export const getStats = async (req, res) => {
 
 export const resetProgress = async (req, res) => {
   try {
-    Progress.reset(req.userId);
-    GameSession.deleteByUserId(req.userId);
-    Achievement.deleteByUserId(req.userId);
+    await Progress.reset(req.userId);
+    await GameSession.deleteByUserId(req.userId);
+    await Achievement.deleteByUserId(req.userId);
 
     res.json({
       success: true,
@@ -101,7 +101,7 @@ export const resetProgress = async (req, res) => {
 
 export const getAccessibilitySettings = async (req, res) => {
   try {
-    const settings = AccessibilitySettings.getByUserId(req.userId);
+    const settings = await AccessibilitySettings.getByUserId(req.userId);
 
     res.json({
       success: true,
@@ -120,7 +120,7 @@ export const getAccessibilitySettings = async (req, res) => {
 
 export const updateAccessibilitySettings = async (req, res) => {
   try {
-    const settings = AccessibilitySettings.update(req.userId, req.body);
+    const settings = await AccessibilitySettings.update(req.userId, req.body);
 
     res.json({
       success: true,
@@ -141,12 +141,12 @@ export const updateAccessibilitySettings = async (req, res) => {
 // Helper function to check and award achievements
 async function checkAndAwardAchievements(userId) {
   const newAchievements = [];
-  const progress = Progress.getByUserId(userId);
-  const sessions = GameSession.findByUserId(userId);
+  const progress = await Progress.getByUserId(userId);
+  const sessions = await GameSession.findByUserId(userId);
 
   // First game achievement
   if (progress.games_played === 1) {
-    const achievement = Achievement.create({
+    const achievement = await Achievement.create({
       userId,
       achievementId: 'first_game',
       title: 'Primer Paso',
@@ -158,7 +158,7 @@ async function checkAndAwardAchievements(userId) {
 
   // 10 games achievement
   if (progress.games_played === 10) {
-    const achievement = Achievement.create({
+    const achievement = await Achievement.create({
       userId,
       achievementId: 'ten_games',
       title: 'Entrenador Dedicado',
@@ -170,7 +170,7 @@ async function checkAndAwardAchievements(userId) {
 
   // Level up achievement
   if (progress.level >= 5) {
-    const achievement = Achievement.create({
+    const achievement = await Achievement.create({
       userId,
       achievementId: 'level_5',
       title: 'Nivel Maestro',
@@ -183,7 +183,7 @@ async function checkAndAwardAchievements(userId) {
   // Perfect accuracy achievement
   const recentSession = sessions[0];
   if (recentSession && recentSession.accuracy === 100) {
-    const achievement = Achievement.create({
+    const achievement = await Achievement.create({
       userId,
       achievementId: 'perfect_accuracy',
       title: 'Precisión Perfecta',

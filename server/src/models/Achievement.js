@@ -1,60 +1,60 @@
-import db from '../config/database.js';
+import { pool } from '../config/database.js';
 
 export class Achievement {
-  static create(achievementData) {
+  static async create(achievementData) {
     try {
-      const stmt = db.prepare(`
-        INSERT INTO achievements (user_id, achievement_id, title, description, icon)
-        VALUES (?, ?, ?, ?, ?)
-      `);
-
-      stmt.run(
-        achievementData.userId,
-        achievementData.achievementId,
-        achievementData.title,
-        achievementData.description,
-        achievementData.icon
+      const result = await pool.query(
+        `INSERT INTO achievements (user_id, achievement_id, title, description, icon)
+         VALUES ($1, $2, $3, $4, $5)
+         ON CONFLICT (user_id, achievement_id) DO NOTHING
+         RETURNING *`,
+        [
+          achievementData.userId,
+          achievementData.achievementId,
+          achievementData.title,
+          achievementData.description,
+          achievementData.icon
+        ]
       );
 
-      return this.findByUserIdAndAchievementId(
-        achievementData.userId,
-        achievementData.achievementId
-      );
+      return result.rows[0] || null;
     } catch (error) {
-      // Achievement already exists
+      // Achievement already exists or other error
       return null;
     }
   }
 
-  static findByUserId(userId) {
-    const stmt = db.prepare(`
-      SELECT * FROM achievements
-      WHERE user_id = ?
-      ORDER BY earned_at DESC
-    `);
-    return stmt.all(userId);
+  static async findByUserId(userId) {
+    const result = await pool.query(
+      `SELECT * FROM achievements
+       WHERE user_id = $1
+       ORDER BY earned_at DESC`,
+      [userId]
+    );
+    return result.rows;
   }
 
-  static findByUserIdAndAchievementId(userId, achievementId) {
-    const stmt = db.prepare(`
-      SELECT * FROM achievements
-      WHERE user_id = ? AND achievement_id = ?
-    `);
-    return stmt.get(userId, achievementId);
+  static async findByUserIdAndAchievementId(userId, achievementId) {
+    const result = await pool.query(
+      `SELECT * FROM achievements
+       WHERE user_id = $1 AND achievement_id = $2`,
+      [userId, achievementId]
+    );
+    return result.rows[0];
   }
 
-  static getRecent(userId, limit = 5) {
-    const stmt = db.prepare(`
-      SELECT * FROM achievements
-      WHERE user_id = ?
-      ORDER BY earned_at DESC
-      LIMIT ?
-    `);
-    return stmt.all(userId, limit);
+  static async getRecent(userId, limit = 5) {
+    const result = await pool.query(
+      `SELECT * FROM achievements
+       WHERE user_id = $1
+       ORDER BY earned_at DESC
+       LIMIT $2`,
+      [userId, limit]
+    );
+    return result.rows;
   }
 
-  static deleteByUserId(userId) {
-    const stmt = db.prepare('DELETE FROM achievements WHERE user_id = ?');
-    stmt.run(userId);
+  static async deleteByUserId(userId) {
+    await pool.query('DELETE FROM achievements WHERE user_id = $1', [userId]);
   }
 }

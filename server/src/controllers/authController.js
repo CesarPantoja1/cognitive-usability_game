@@ -6,7 +6,7 @@ export const register = async (req, res) => {
     const { username, email, password, fullName } = req.body;
 
     // Check if user already exists
-    const existingUserByEmail = User.findByEmail(email);
+    const existingUserByEmail = await User.findByEmail(email);
     if (existingUserByEmail) {
       return res.status(400).json({
         success: false,
@@ -14,7 +14,7 @@ export const register = async (req, res) => {
       });
     }
 
-    const existingUserByUsername = User.findByUsername(username);
+    const existingUserByUsername = await User.findByUsername(username);
     if (existingUserByUsername) {
       return res.status(400).json({
         success: false,
@@ -23,7 +23,7 @@ export const register = async (req, res) => {
     }
 
     // Create user
-    const user = User.create({ username, email, password, fullName });
+    const user = await User.create({ username, email, password, fullName });
     const token = generateToken(user.id);
 
     res.status(201).json({
@@ -48,7 +48,7 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
 
     // Find user
-    const user = User.findByEmail(email);
+    const user = await User.findByEmail(email);
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -110,7 +110,7 @@ export const updateProfile = async (req, res) => {
     if (fullName) updateData.fullName = fullName;
     if (password) updateData.password = password;
 
-    const updatedUser = User.update(req.userId, updateData);
+    const updatedUser = await User.update(req.userId, updateData);
 
     res.json({
       success: true,
