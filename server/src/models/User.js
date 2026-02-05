@@ -1,78 +1,90 @@
-import db from '../config/database.js';
+import { pool } from '../config/database.js';
 import bcrypt from 'bcryptjs';
 
 export class User {
-  static create({ username, email, password, fullName }) {
+  static async create({ username, email, password, fullName }) {
     const hashedPassword = bcrypt.hashSync(password, 10);
+    const client = await pool.connect();
 
-    const stmt = db.prepare(`
-      INSERT INTO users (username, email, password, full_name)
-      VALUES (?, ?, ?, ?)
-    `);
+    try {
+      await client.query('BEGIN');
 
-    const result = stmt.run(username, email, hashedPassword, fullName);
+      // Create user
+      const userResult = await client.query(
+        `INSERT INTO users (username, email, password, full_name)
+         VALUES ($1, $2, $3, $4)
+         RETURNING *`,
+        [username, email, hashedPassword, fullName]
+      );
 
-    // Create initial progress entry
-    const progressStmt = db.prepare(`
-      INSERT INTO user_progress (user_id)
-      VALUES (?)
-    `);
-    progressStmt.run(result.lastInsertRowid);
+      const userId = userResult.rows[0].id;
 
-    // Create initial accessibility settings
-    const settingsStmt = db.prepare(`
-      INSERT INTO accessibility_settings (user_id)
-      VALUES (?)
-    `);
-    settingsStmt.run(result.lastInsertRowid);
+      // Create initial progress entry
+      await client.query(
+        `INSERT INTO user_progress (user_id) VALUES ($1)`,
+        [userId]
+      );
 
-    return this.findById(result.lastInsertRowid);
+      // Create initial accessibility settings
+      await client.query(
+        `INSERT INTO accessibility_settings (user_id) VALUES ($1)`,
+        [userId]
+      );
+
+      await client.query('COMMIT');
+
+      return userResult.rows[0];
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 
-  static findById(id) {
-    const stmt = db.prepare('SELECT * FROM users WHERE id = ?');
-    return stmt.get(id);
+  static async findById(id) {
+    const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+    return result.rows[0];
   }
 
-  static findByEmail(email) {
-    const stmt = db.prepare('SELECT * FROM users WHERE email = ?');
-    return stmt.get(email);
+  static async findByEmail(email) {
+    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    return result.rows[0];
   }
 
-  static findByUsername(username) {
-    const stmt = db.prepare('SELECT * FROM users WHERE username = ?');
-    return stmt.get(username);
+  static async findByUsername(username) {
+    const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+    return result.rows[0];
   }
 
   static verifyPassword(plainPassword, hashedPassword) {
     return bcrypt.compareSync(plainPassword, hashedPassword);
   }
 
-  static update(id, data) {
+  static async update(id, data) {
     const fields = [];
     const values = [];
+    let paramIndex = 1;
 
     if (data.fullName) {
-      fields.push('full_name = ?');
+      fields.push(`full_name = $${paramIndex++}`);
       values.push(data.fullName);
     }
 
     if (data.password) {
-      fields.push('password = ?');
+      fields.push(`password = $${paramIndex++}`);
       values.push(bcrypt.hashSync(data.password, 10));
     }
 
-    fields.push('updated_at = CURRENT_TIMESTAMP');
+    fields.push(`updated_at = CURRENT_TIMESTAMP`);
     values.push(id);
 
-    const stmt = db.prepare(`
-      UPDATE users
-      SET ${fields.join(', ')}
-      WHERE id = ?
-    `);
+    const result = await pool.query(
+      `UPDATE users SET ${fields.join(', ')} WHERE id = $${paramIndex} RETURNING *`,
+      values
+    );
 
-    stmt.run(...values);
-    return this.findById(id);
+    return result.rows[0];
   }
 
   static sanitizeUser(user) {

@@ -1,85 +1,81 @@
-export const createTables = (db) => {
+export const createTables = async (db) => {
   // Users table
-  db.exec(`
+  await db.exec(`
     CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      username TEXT UNIQUE NOT NULL,
-      email TEXT UNIQUE NOT NULL,
-      password TEXT NOT NULL,
-      full_name TEXT,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      id SERIAL PRIMARY KEY,
+      username VARCHAR(255) UNIQUE NOT NULL,
+      email VARCHAR(255) UNIQUE NOT NULL,
+      password VARCHAR(255) NOT NULL,
+      full_name VARCHAR(255),
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
 
   // User progress table
-  db.exec(`
+  await db.exec(`
     CREATE TABLE IF NOT EXISTS user_progress (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_id INTEGER NOT NULL,
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       level INTEGER DEFAULT 1,
       total_points INTEGER DEFAULT 0,
       games_played INTEGER DEFAULT 0,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
 
   // Game sessions table
-  db.exec(`
+  await db.exec(`
     CREATE TABLE IF NOT EXISTS game_sessions (
-      id TEXT PRIMARY KEY,
-      user_id INTEGER NOT NULL,
-      game_id TEXT NOT NULL,
-      game_type TEXT NOT NULL,
-      difficulty TEXT NOT NULL,
+      id VARCHAR(255) PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      game_id VARCHAR(255) NOT NULL,
+      game_type VARCHAR(255) NOT NULL,
+      difficulty VARCHAR(50) NOT NULL,
       score INTEGER DEFAULT 0,
       max_score INTEGER DEFAULT 0,
       accuracy REAL DEFAULT 0,
       time_spent INTEGER DEFAULT 0,
-      performance_rating TEXT,
-      completed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      performance_rating VARCHAR(50),
+      completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
 
   // Achievements table
-  db.exec(`
+  await db.exec(`
     CREATE TABLE IF NOT EXISTS achievements (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_id INTEGER NOT NULL,
-      achievement_id TEXT NOT NULL,
-      title TEXT NOT NULL,
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      achievement_id VARCHAR(255) NOT NULL,
+      title VARCHAR(255) NOT NULL,
       description TEXT NOT NULL,
-      icon TEXT NOT NULL,
-      earned_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+      icon VARCHAR(255) NOT NULL,
+      earned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       UNIQUE(user_id, achievement_id)
     )
   `);
 
   // Accessibility settings table
-  db.exec(`
+  await db.exec(`
     CREATE TABLE IF NOT EXISTS accessibility_settings (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_id INTEGER UNIQUE NOT NULL,
-      high_contrast BOOLEAN DEFAULT 0,
-      subtitles_enabled BOOLEAN DEFAULT 1,
-      sound_enabled BOOLEAN DEFAULT 1,
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER UNIQUE NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      high_contrast BOOLEAN DEFAULT FALSE,
+      subtitles_enabled BOOLEAN DEFAULT TRUE,
+      sound_enabled BOOLEAN DEFAULT TRUE,
       font_size INTEGER DEFAULT 16,
-      reduced_motion BOOLEAN DEFAULT 0,
-      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      reduced_motion BOOLEAN DEFAULT FALSE,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
 
   // Create indexes for better performance
-  db.exec(`
+  await db.exec(`
     CREATE INDEX IF NOT EXISTS idx_game_sessions_user_id ON game_sessions(user_id);
     CREATE INDEX IF NOT EXISTS idx_game_sessions_game_type ON game_sessions(game_type);
     CREATE INDEX IF NOT EXISTS idx_achievements_user_id ON achievements(user_id);
-    CREATE INDEX IF NOT EXISTS idx_user_progress_user_id ON user_progress(user_id);
+    CREATE INDEX IF NOT EXISTS idx_user_progress_user_id ON user_progress(user_id)
   `);
 
   console.log('✅ Database tables created successfully');

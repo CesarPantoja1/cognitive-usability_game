@@ -1,7 +1,7 @@
 import { verifyToken } from '../utils/jwt.js';
 import { User } from '../models/User.js';
 
-export const authenticate = (req, res, next) => {
+export const authenticate = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -22,7 +22,7 @@ export const authenticate = (req, res, next) => {
       });
     }
 
-    const user = User.findById(decoded.userId);
+    const user = await User.findById(decoded.userId);
 
     if (!user) {
       return res.status(401).json({

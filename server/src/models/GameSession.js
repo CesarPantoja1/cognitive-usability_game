@@ -1,58 +1,60 @@
-import db from '../config/database.js';
+import { pool } from '../config/database.js';
 
 export class GameSession {
-  static create(sessionData) {
-    const stmt = db.prepare(`
-      INSERT INTO game_sessions (
+  static async create(sessionData) {
+    const result = await pool.query(
+      `INSERT INTO game_sessions (
         id, user_id, game_id, game_type, difficulty,
         score, max_score, accuracy, time_spent, performance_rating
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `);
-
-    stmt.run(
-      sessionData.id,
-      sessionData.userId,
-      sessionData.gameId,
-      sessionData.gameType,
-      sessionData.difficulty,
-      sessionData.score,
-      sessionData.maxScore,
-      sessionData.accuracy,
-      sessionData.timeSpent,
-      sessionData.performanceRating
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      RETURNING *`,
+      [
+        sessionData.id,
+        sessionData.userId,
+        sessionData.gameId,
+        sessionData.gameType,
+        sessionData.difficulty,
+        sessionData.score,
+        sessionData.maxScore,
+        sessionData.accuracy,
+        sessionData.timeSpent,
+        sessionData.performanceRating
+      ]
     );
 
-    return this.findById(sessionData.id);
+    return result.rows[0];
   }
 
-  static findById(id) {
-    const stmt = db.prepare('SELECT * FROM game_sessions WHERE id = ?');
-    return stmt.get(id);
+  static async findById(id) {
+    const result = await pool.query('SELECT * FROM game_sessions WHERE id = $1', [id]);
+    return result.rows[0];
   }
 
-  static findByUserId(userId, limit = 50) {
-    const stmt = db.prepare(`
-      SELECT * FROM game_sessions
-      WHERE user_id = ?
-      ORDER BY completed_at DESC
-      LIMIT ?
-    `);
-    return stmt.all(userId, limit);
+  static async findByUserId(userId, limit = 50) {
+    const result = await pool.query(
+      `SELECT * FROM game_sessions
+       WHERE user_id = $1
+       ORDER BY completed_at DESC
+       LIMIT $2`,
+      [userId, limit]
+    );
+    return result.rows;
   }
 
-  static findByUserIdAndGameType(userId, gameType) {
-    const stmt = db.prepare(`
-      SELECT * FROM game_sessions
-      WHERE user_id = ? AND game_type = ?
-      ORDER BY completed_at DESC
-    `);
-    return stmt.all(userId, gameType);
+  static async findByUserIdAndGameType(userId, gameType) {
+    const result = await pool.query(
+      `SELECT * FROM game_sessions
+       WHERE user_id = $1 AND game_type = $2
+       ORDER BY completed_at DESC`,
+      [userId, gameType]
+    );
+    return result.rows;
   }
 
-  static getStats(userId) {
-    const stmt = db.prepare(`
-      SELECT
+  static async getStats(userId) {
+    const result = await pool.query(
+      `SELECT
         game_type,
         COUNT(*) as games_played,
         AVG(score) as avg_score,
@@ -60,24 +62,25 @@ export class GameSession {
         AVG(accuracy) as avg_accuracy,
         SUM(time_spent) as total_time
       FROM game_sessions
-      WHERE user_id = ?
-      GROUP BY game_type
-    `);
-    return stmt.all(userId);
+      WHERE user_id = $1
+      GROUP BY game_type`,
+      [userId]
+    );
+    return result.rows;
   }
 
-  static getRecentSessions(userId, limit = 10) {
-    const stmt = db.prepare(`
-      SELECT * FROM game_sessions
-      WHERE user_id = ?
-      ORDER BY completed_at DESC
-      LIMIT ?
-    `);
-    return stmt.all(userId, limit);
+  static async getRecentSessions(userId, limit = 10) {
+    const result = await pool.query(
+      `SELECT * FROM game_sessions
+       WHERE user_id = $1
+       ORDER BY completed_at DESC
+       LIMIT $2`,
+      [userId, limit]
+    );
+    return result.rows;
   }
 
-  static deleteByUserId(userId) {
-    const stmt = db.prepare('DELETE FROM game_sessions WHERE user_id = ?');
-    stmt.run(userId);
+  static async deleteByUserId(userId) {
+    await pool.query('DELETE FROM game_sessions WHERE user_id = $1', [userId]);
   }
 }
