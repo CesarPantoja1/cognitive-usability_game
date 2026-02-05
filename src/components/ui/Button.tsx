@@ -1,14 +1,21 @@
-import React, { ButtonHTMLAttributes, forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { motion } from 'framer-motion';
 import clsx from 'clsx';
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps {
+  children?: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'success' | 'danger';
   size?: 'small' | 'medium' | 'large';
   fullWidth?: boolean;
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
   loading?: boolean;
+  className?: string;
+  disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+  onClick?: () => void;
+  'aria-label'?: string;
+  'aria-describedby'?: string;
 }
 
 /**
@@ -26,6 +33,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       loading = false,
       className,
       disabled,
+      type = 'button',
+      onClick,
       ...props
     },
     ref
@@ -77,6 +86,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <motion.button
         ref={ref}
+        type={type}
         className={clsx(
           baseClasses,
           variantClasses[variant],
@@ -85,9 +95,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           className
         )}
         disabled={disabled || loading}
+        onClick={onClick}
+        aria-label={props['aria-label']}
+        aria-describedby={props['aria-describedby']}
         whileHover={{ scale: disabled || loading ? 1 : 1.02 }}
         whileTap={{ scale: disabled || loading ? 1 : 0.98 }}
-        {...props}
       >
         {loading && (
           <div
