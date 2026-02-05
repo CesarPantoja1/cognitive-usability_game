@@ -9,6 +9,7 @@ interface AccessibilityContextType {
   toggleSubtitles: () => void;
   toggleSound: () => void;
   toggleReducedMotion: () => void;
+  toggleExtendedTime: () => void;
   setFontSize: (size: 'normal' | 'large' | 'extra-large') => void;
 }
 
@@ -70,6 +71,10 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({ ch
     setSettings(prev => ({ ...prev, reducedMotion: !prev.reducedMotion }));
   };
 
+  const toggleExtendedTime = () => {
+    setSettings(prev => ({ ...prev, extendedTime: !prev.extendedTime }));
+  };
+
   const setFontSize = (size: 'normal' | 'large' | 'extra-large') => {
     setSettings(prev => ({ ...prev, fontSize: size }));
   };
@@ -81,6 +86,7 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({ ch
     toggleSubtitles,
     toggleSound,
     toggleReducedMotion,
+    toggleExtendedTime,
     setFontSize,
   };
 

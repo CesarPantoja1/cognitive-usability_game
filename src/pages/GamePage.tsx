@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button, Card, ProgressBar } from '../components/ui';
+import { Button, Card, ProgressBar, ConfirmDialog } from '../components/ui';
 import { getGameById } from '../data/gamesData';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { GameModel } from '../models/GameModel';
 import { DifficultyLevel, GameSession } from '../types/index';
 import { useProgress } from '../contexts/ProgressContext';
@@ -25,6 +26,9 @@ export const GamePage: React.FC = () => {
   const [session, setSession] = useState<GameSession | null>(null);
   const [isPaused, setIsPaused] = useState(false);
   const [timeElapsed, setTimeElapsed] = useState(0);
+  const [showExitDialog, setShowExitDialog] = useState(false);
+  const [timeAnnouncement, setTimeAnnouncement] = useState('');
+  const [lastAnnouncedMinute, setLastAnnouncedMinute] = useState(0);
 
   useEffect(() => {
     if (!gameId) return;
@@ -68,11 +72,22 @@ export const GamePage: React.FC = () => {
   };
 
   const handleExit = () => {
-    const confirmMessage = `¿Seguro que deseas salir del juego?\n\n❌ Perderás los ${session?.score || 0} puntos acumulados\n❌ El progreso de esta partida no se guardará`;
-    if (window.confirm(confirmMessage)) {
-      navigate('/training');
-    }
+    setShowExitDialog(true);
   };
+
+  const confirmExit = () => {
+    setShowExitDialog(false);
+    navigate('/training');
+  };
+
+  // Anunciar tiempo cada minuto para screen readers (WCAG 4.1.3)
+  useEffect(() => {
+    const currentMinute = Math.floor(timeElapsed / 60);
+    if (currentMinute > lastAnnouncedMinute && currentMinute > 0) {
+      setLastAnnouncedMinute(currentMinute);
+      setTimeAnnouncement(`${currentMinute} ${currentMinute === 1 ? 'minuto' : 'minutos'} de juego`);
+    }
+  }, [timeElapsed, lastAnnouncedMinute]);
 
   if (!gameModel || !session || !gameId) {
     return (
@@ -223,6 +238,28 @@ export const GamePage: React.FC = () => {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Live region para anuncios de tiempo (WCAG 4.1.3) */}
+      <div 
+        role="status" 
+        aria-live="polite" 
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {timeAnnouncement}
+      </div>
+
+      {/* Modal de confirmación de salida accesible (WCAG 4.1.2) */}
+      <ConfirmDialog
+        isOpen={showExitDialog}
+        title="¿Salir del juego?"
+        message={`Si sales ahora:\n\n• Perderás los ${session?.score || 0} puntos acumulados\n• El progreso de esta partida no se guardará`}
+        confirmText="Sí, salir"
+        cancelText="Seguir jugando"
+        onConfirm={confirmExit}
+        onCancel={() => setShowExitDialog(false)}
+        variant="warning"
+      />
     </div>
   );
 };

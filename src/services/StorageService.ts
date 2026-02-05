@@ -122,6 +122,7 @@ export class StorageService {
       soundEnabled: false, // Desactivado por defecto para usuarios con discapacidad auditiva
       fontSize: 'normal',
       reducedMotion: false,
+      extendedTime: false, // WCAG 2.2.1: Tiempo ajustable
     };
   }
 

@@ -5,6 +5,7 @@ import { Button, Card } from '../components/ui';
 import { GAMES_CATALOG, getGamesByCategory } from '../data/gamesData';
 import { ArrowLeft, Brain, Target, Sparkles, Clock, Trophy, Zap, Filter, Puzzle } from 'lucide-react';
 import { getIcon } from '../utils/iconMapping';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 type Category = 'all' | 'memory' | 'logic' | 'attention';
 
@@ -71,6 +72,8 @@ export const TrainingSelectionPage: React.FC = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<Category>('all');
   const [hoveredGame, setHoveredGame] = useState<string | null>(null);
+  
+  usePageTitle('Seleccionar Juego');
 
   const filteredGames = selectedCategory === 'all'
     ? GAMES_CATALOG
@@ -116,12 +119,12 @@ export const TrainingSelectionPage: React.FC = () => {
             <Zap className="w-10 h-10 text-white" />
           </motion.div>
           
-          <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">
+          <h1 className="text-4xl sm:text-5xl font-extrabold mb-4" tabIndex={0}>
             <span className="bg-gradient-to-r from-primary-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
               Elige tu Entrenamiento
             </span>
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto" tabIndex={0}>
             Selecciona un juego para comenzar a ejercitar tu mente
           </p>
         </motion.div>
@@ -159,7 +162,7 @@ export const TrainingSelectionPage: React.FC = () => {
                   whileTap={{ scale: 0.98 }}
                   className={`
                     flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-300
-                    focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-400 focus-visible:ring-offset-2
+                    focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-red-500 focus-visible:ring-offset-2
                     ${isSelected
                       ? `bg-gradient-to-r ${info.color} text-white shadow-lg shadow-${category === 'all' ? 'indigo' : category}-500/25`
                       : 'bg-white text-gray-700 hover:bg-gray-50 shadow-md hover:shadow-lg'
@@ -180,9 +183,10 @@ export const TrainingSelectionPage: React.FC = () => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
+          aria-live="polite"
         >
-          <div className={`inline-flex items-center gap-3 px-6 py-3 ${currentCategoryInfo.bgColor} rounded-2xl`}>
-            <currentCategoryInfo.icon className={`w-6 h-6 ${currentCategoryInfo.textColor}`} />
+          <div className={`inline-flex items-center gap-3 px-6 py-3 ${currentCategoryInfo.bgColor} rounded-2xl`} tabIndex={0}>
+            <currentCategoryInfo.icon className={`w-6 h-6 ${currentCategoryInfo.textColor}`} aria-hidden="true" />
             <span className={`font-medium ${currentCategoryInfo.textColor}`}>
               {currentCategoryInfo.description}
             </span>
@@ -295,14 +299,16 @@ export const TrainingSelectionPage: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="text-center py-16"
+            role="status"
+            aria-live="polite"
           >
-            <div className="w-24 h-24 bg-gray-100 rounded-3xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-24 h-24 bg-gray-100 rounded-3xl flex items-center justify-center mx-auto mb-4" aria-hidden="true">
               <Puzzle size={48} className="text-gray-300" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">
+            <h3 className="text-xl font-semibold text-gray-600 mb-2" tabIndex={0}>
               No hay juegos en esta categoría
             </h3>
-            <p className="text-gray-500">
+            <p className="text-gray-500" tabIndex={0}>
               Prueba seleccionando otra categoría
             </p>
           </motion.div>
@@ -317,14 +323,14 @@ export const TrainingSelectionPage: React.FC = () => {
         >
           <Card className="bg-gradient-to-r from-primary-50 to-indigo-50 border-primary-100">
             <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
-              <div className="flex-shrink-0 w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center">
+              <div className="flex-shrink-0 w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center" aria-hidden="true">
                 <Brain className="w-8 h-8 text-primary-600" />
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                <h3 className="text-lg font-semibold text-gray-900 mb-1" tabIndex={0}>
                   💡 Tip: Entrena regularmente
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-gray-600" tabIndex={0}>
                   La práctica diaria de 10-15 minutos es más efectiva que sesiones largas ocasionales. 
                   Intenta jugar al menos 3 juegos diferentes por día para ejercitar distintas áreas cognitivas.
                 </p>

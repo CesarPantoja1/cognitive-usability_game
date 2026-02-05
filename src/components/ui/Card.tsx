@@ -36,7 +36,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
         cursor-pointer
         hover:scale-105 hover:border-primary-400 hover:shadow-card-hover
         active:scale-95
-        focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-400 focus-visible:ring-offset-2
+        focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-red-500 focus-visible:ring-offset-2
       `
       : '';
 

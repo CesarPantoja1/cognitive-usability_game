@@ -5,12 +5,14 @@ import { Button, Card } from '../components/ui';
 import { getGameById } from '../data/gamesData';
 import { ArrowLeft, Play, HelpCircle } from 'lucide-react';
 import { getIcon } from '../utils/iconMapping';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 export const InstructionsPage: React.FC = () => {
   const navigate = useNavigate();
   const { gameId } = useParams<{ gameId: string }>();
-
   const game = gameId ? getGameById(gameId) : null;
+  
+  usePageTitle(game ? `Instrucciones: ${game.name}` : 'Instrucciones');
 
   if (!game) {
     return (
@@ -51,17 +53,17 @@ export const InstructionsPage: React.FC = () => {
               {getIcon(game.icon, 40)}
             </div>
             <div className="flex-1">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2" tabIndex={0}>
                 {game.name}
               </h1>
-              <p className="text-lg text-gray-600">
+              <p className="text-lg text-gray-600" tabIndex={0}>
                 {game.description}
               </p>
             </div>
           </div>
 
           <section className="mb-6" aria-labelledby="instructions-heading">
-            <h2 id="instructions-heading" className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <h2 id="instructions-heading" className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2" tabIndex={0}>
               <HelpCircle size={24} className="text-primary-600" aria-hidden="true" />
               Instrucciones
             </h2>
@@ -70,6 +72,7 @@ export const InstructionsPage: React.FC = () => {
                 <li
                   key={index}
                   className="flex items-start gap-3 text-lg text-gray-700"
+                  tabIndex={0}
                 >
                   <span className="flex-shrink-0 w-8 h-8 bg-primary-600 text-white rounded-full flex items-center justify-center font-semibold" aria-hidden="true">
                     {index + 1}

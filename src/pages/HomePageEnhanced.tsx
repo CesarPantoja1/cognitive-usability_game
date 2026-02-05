@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button, Card, Badge } from '../components/ui';
 import { useProgress } from '../contexts/ProgressContext';
 import { useAccessibility } from '../contexts/AccessibilityContext';
 import { useAuth } from '../contexts/AuthContext';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { 
   Play, 
   BarChart3, 
@@ -75,12 +76,32 @@ const dailyTips = [
 ];
 
 export const HomePageEnhanced: React.FC = () => {
+  usePageTitle('Inicio');
   const navigate = useNavigate();
   const { progress } = useProgress();
   const { settings } = useAccessibility();
   const { user, logout } = useAuth();
   const [currentTip, setCurrentTip] = useState(0);
   const [showUserMenu, setShowUserMenu] = useState(false);
+
+  // Cerrar menú con Escape (WCAG 2.1.2 - Sin trampas de teclado)
+  const closeMenu = useCallback(() => {
+    setShowUserMenu(false);
+  }, []);
+
+  useEffect(() => {
+    const handleEscapeKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && showUserMenu) {
+        closeMenu();
+        // Devolver foco al botón que abrió el menú
+        const menuButton = document.querySelector('[aria-haspopup="menu"]') as HTMLElement;
+        menuButton?.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscapeKey);
+    return () => document.removeEventListener('keydown', handleEscapeKey);
+  }, [showUserMenu, closeMenu]);
 
   // Cerrar menú al hacer click fuera
   useEffect(() => {
@@ -158,8 +179,11 @@ export const HomePageEnhanced: React.FC = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-3"
+              tabIndex={0}
+              role="banner"
+              aria-label="MindGym - Aplicación de entrenamiento cognitivo"
             >
-              <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-lg" aria-hidden="true">
                 <Brain className="w-7 h-7 text-white" />
               </div>
               <div>
@@ -174,15 +198,23 @@ export const HomePageEnhanced: React.FC = () => {
               className="flex items-center gap-4"
             >
               {hasPlayed && (
-                <div className="hidden sm:flex items-center gap-4 mr-4">
-                  <div className="flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm">
-                    <Trophy className="w-4 h-4 text-amber-500" />
+                <div className="hidden sm:flex items-center gap-4 mr-4" role="status" aria-label="Resumen de tu progreso">
+                  <div 
+                    className="flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm"
+                    tabIndex={0}
+                    aria-label={`Puntuación total: ${progress.totalScore.toLocaleString()} puntos`}
+                  >
+                    <Trophy className="w-4 h-4 text-amber-500" aria-hidden="true" />
                     <span className="text-sm font-semibold text-gray-700">
                       {progress.totalScore.toLocaleString()} pts
                     </span>
                   </div>
-                  <div className="flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm">
-                    <Star className="w-4 h-4 text-primary-500" />
+                  <div 
+                    className="flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm"
+                    tabIndex={0}
+                    aria-label={`Tu nivel actual: ${levelDisplay}`}
+                  >
+                    <Star className="w-4 h-4 text-primary-500" aria-hidden="true" />
                     <span className="text-sm font-semibold text-gray-700">
                       {levelDisplay}
                     </span>
@@ -194,7 +226,7 @@ export const HomePageEnhanced: React.FC = () => {
               <button
                 type="button"
                 onClick={() => navigate('/leaderboard')}
-                className="p-3 bg-gradient-to-r from-primary-500 to-purple-600 backdrop-blur-sm rounded-xl hover:from-primary-600 hover:to-purple-700 transition-all shadow-sm hover:shadow-md focus:outline-none focus:ring-4 focus:ring-primary-400 focus:ring-offset-2"
+                className="p-3 bg-gradient-to-r from-primary-500 to-purple-600 backdrop-blur-sm rounded-xl hover:from-primary-600 hover:to-purple-700 transition-all shadow-sm hover:shadow-md focus:outline-none focus:ring-4 focus:ring-red-500 focus:ring-offset-2"
                 aria-label="Ver tabla de posiciones"
                 tabIndex={0}
               >
@@ -205,7 +237,7 @@ export const HomePageEnhanced: React.FC = () => {
               <button
                 type="button"
                 onClick={() => navigate('/settings')}
-                className="p-3 bg-white/80 backdrop-blur-sm rounded-xl hover:bg-white transition-all shadow-sm hover:shadow-md focus:outline-none focus:ring-4 focus:ring-primary-400 focus:ring-offset-2"
+                className="p-3 bg-white/80 backdrop-blur-sm rounded-xl hover:bg-white transition-all shadow-sm hover:shadow-md focus:outline-none focus:ring-4 focus:ring-red-500 focus:ring-offset-2"
                 aria-label="Configuración y accesibilidad"
                 tabIndex={0}
               >
@@ -226,7 +258,7 @@ export const HomePageEnhanced: React.FC = () => {
                       setShowUserMenu(false);
                     }
                   }}
-                  className="flex items-center gap-2 px-3 py-2 bg-white/80 backdrop-blur-sm rounded-xl hover:bg-white transition-all shadow-sm hover:shadow-md focus:outline-none focus:ring-4 focus:ring-primary-400 focus:ring-offset-2"
+                  className="flex items-center gap-2 px-3 py-2 bg-white/80 backdrop-blur-sm rounded-xl hover:bg-white transition-all shadow-sm hover:shadow-md focus:outline-none focus:ring-4 focus:ring-red-500 focus:ring-offset-2"
                   aria-label={`Menú de usuario para ${user?.name || 'Usuario'}`}
                   aria-expanded={showUserMenu}
                   aria-haspopup="menu"
@@ -374,13 +406,13 @@ export const HomePageEnhanced: React.FC = () => {
             </div>
           </motion.div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4" tabIndex={0}>
             <span className="bg-gradient-to-r from-primary-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
               {getGreeting()}
             </span>
           </h1>
           
-          <p className="text-xl sm:text-2xl text-gray-600 max-w-2xl mx-auto mb-8 leading-relaxed">
+          <p className="text-xl sm:text-2xl text-gray-600 max-w-2xl mx-auto mb-8 leading-relaxed" tabIndex={0}>
             Ejercita tu mente con juegos diseñados para 
             <span className="font-semibold text-primary-600"> estimular </span>
             tu memoria, lógica y atención
@@ -424,16 +456,22 @@ export const HomePageEnhanced: React.FC = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
           className="mb-12"
+          aria-labelledby="tip-heading"
         >
           <div className="max-w-2xl mx-auto">
-            <div className="relative bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 rounded-2xl p-5 overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-200/30 to-orange-200/30 rounded-full -mr-16 -mt-16" />
+            <div 
+              className="relative bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 rounded-2xl p-5 overflow-hidden"
+              tabIndex={0}
+              role="region"
+              aria-label="Consejo diario de entrenamiento"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-200/30 to-orange-200/30 rounded-full -mr-16 -mt-16" aria-hidden="true" />
               <div className="flex items-center gap-4 relative">
-                <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg" aria-hidden="true">
                   <Zap className="w-6 h-6 text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs font-medium text-amber-600 uppercase tracking-wide mb-1">
+                  <p id="tip-heading" className="text-xs font-medium text-amber-600 uppercase tracking-wide mb-1">
                     Tip del día
                   </p>
                   <AnimatePresence mode="wait">
@@ -443,6 +481,8 @@ export const HomePageEnhanced: React.FC = () => {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
                       className="text-gray-700 font-medium"
+                      aria-live="polite"
+                      aria-atomic="true"
                     >
                       {dailyTips[currentTip]}
                     </motion.p>
@@ -459,8 +499,9 @@ export const HomePageEnhanced: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
           className="mb-12"
+          aria-labelledby="areas-heading"
         >
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
+          <h2 id="areas-heading" className="text-2xl font-bold text-gray-900 text-center mb-8" tabIndex={0}>
             Áreas de Entrenamiento
           </h2>
           
@@ -498,7 +539,7 @@ export const HomePageEnhanced: React.FC = () => {
                       {feature.title}
                     </h3>
                     
-                    <p className="text-gray-600">
+                    <p className="text-gray-600" tabIndex={0}>
                       {feature.description}
                     </p>
                     
@@ -520,10 +561,11 @@ export const HomePageEnhanced: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
             className="mb-12"
+            aria-labelledby="progress-heading"
           >
             <div className="max-w-4xl mx-auto">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 id="progress-heading" className="text-2xl font-bold text-gray-900" tabIndex={0}>
                   Tu Progreso
                 </h2>
                 <Button
@@ -537,9 +579,9 @@ export const HomePageEnhanced: React.FC = () => {
                 </Button>
               </div>
               
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <Card className="text-center bg-gradient-to-br from-primary-50 to-blue-50 border-primary-100">
-                  <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4" role="list" aria-label="Estadísticas de tu progreso">
+                <Card className="text-center bg-gradient-to-br from-primary-50 to-blue-50 border-primary-100" tabIndex={0} role="listitem" aria-label={`Puntos totales: ${progress.totalScore.toLocaleString()}`}>
+                  <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center mx-auto mb-3" aria-hidden="true">
                     <Trophy className="w-6 h-6 text-primary-600" />
                   </div>
                   <div className="text-2xl font-bold text-gray-900">
@@ -548,8 +590,8 @@ export const HomePageEnhanced: React.FC = () => {
                   <div className="text-sm text-gray-600">Puntos Totales</div>
                 </Card>
 
-                <Card className="text-center bg-gradient-to-br from-green-50 to-emerald-50 border-green-100">
-                  <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                <Card className="text-center bg-gradient-to-br from-green-50 to-emerald-50 border-green-100" tabIndex={0} role="listitem" aria-label={`Juegos completados: ${progress.gamesCompleted}`}>
+                  <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-3" aria-hidden="true">
                     <CheckCircle className="w-6 h-6 text-green-600" />
                   </div>
                   <div className="text-2xl font-bold text-gray-900">
@@ -558,8 +600,8 @@ export const HomePageEnhanced: React.FC = () => {
                   <div className="text-sm text-gray-600">Juegos Completados</div>
                 </Card>
 
-                <Card className="text-center bg-gradient-to-br from-amber-50 to-orange-50 border-amber-100">
-                  <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                <Card className="text-center bg-gradient-to-br from-amber-50 to-orange-50 border-amber-100" tabIndex={0} role="listitem" aria-label={`Precisión promedio: ${progress.accuracyAverage} por ciento`}>
+                  <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center mx-auto mb-3" aria-hidden="true">
                     <TrendingUp className="w-6 h-6 text-amber-600" />
                   </div>
                   <div className="text-2xl font-bold text-gray-900">
@@ -568,8 +610,8 @@ export const HomePageEnhanced: React.FC = () => {
                   <div className="text-sm text-gray-600">Precisión</div>
                 </Card>
 
-                <Card className="text-center bg-gradient-to-br from-purple-50 to-pink-50 border-purple-100">
-                  <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                <Card className="text-center bg-gradient-to-br from-purple-50 to-pink-50 border-purple-100" tabIndex={0} role="listitem" aria-label={`Nivel actual: ${progress.currentLevel}`}>
+                  <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3" aria-hidden="true">
                     <Calendar className="w-6 h-6 text-purple-600" />
                   </div>
                   <div className="text-2xl font-bold text-gray-900">
@@ -588,13 +630,14 @@ export const HomePageEnhanced: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
           className="mb-12"
+          aria-labelledby="benefits-heading"
         >
           <div className="max-w-4xl mx-auto">
             <Card className="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 text-white overflow-hidden relative">
-              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-50" />
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-50" aria-hidden="true" />
               
               <div className="relative z-10 text-center py-4">
-                <div className="flex justify-center mb-4">
+                <div className="flex justify-center mb-4" aria-hidden="true">
                   <div className="flex -space-x-2">
                     <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center">
                       <Heart className="w-6 h-6 text-white" />
@@ -608,28 +651,34 @@ export const HomePageEnhanced: React.FC = () => {
                   </div>
                 </div>
                 
-                <h3 className="text-2xl font-bold mb-3">
+                <h3 id="benefits-heading" className="text-2xl font-bold mb-3" tabIndex={0}>
                   Diseñado para ti
                 </h3>
                 
-                <p className="text-white/90 max-w-xl mx-auto mb-6 leading-relaxed">
+                <p className="text-white/90 max-w-xl mx-auto mb-6 leading-relaxed" tabIndex={0}>
                   Esta aplicación está diseñada especialmente con enfoque en 
                   <span className="font-semibold"> accesibilidad visual</span>. 
                   Todos los elementos importantes se comunican mediante iconos, colores 
                   y texto claro.
                 </p>
                 
-                <div className="flex flex-wrap gap-3 justify-center">
-                  <Badge className="bg-white/20 text-white border-white/30 px-4 py-2">
-                    ✓ Sin dependencia de audio
-                  </Badge>
-                  <Badge className="bg-white/20 text-white border-white/30 px-4 py-2">
-                    ✓ Navegación por teclado
-                  </Badge>
-                  <Badge className="bg-white/20 text-white border-white/30 px-4 py-2">
-                    ✓ Alto contraste disponible
-                  </Badge>
-                </div>
+                <ul className="flex flex-wrap gap-3 justify-center" role="list" aria-label="Características de accesibilidad">
+                  <li>
+                    <Badge className="bg-white/20 text-white border-white/30 px-4 py-2" tabIndex={0}>
+                      ✓ Sin dependencia de audio
+                    </Badge>
+                  </li>
+                  <li>
+                    <Badge className="bg-white/20 text-white border-white/30 px-4 py-2" tabIndex={0}>
+                      ✓ Navegación por teclado
+                    </Badge>
+                  </li>
+                  <li>
+                    <Badge className="bg-white/20 text-white border-white/30 px-4 py-2" tabIndex={0}>
+                      ✓ Alto contraste disponible
+                    </Badge>
+                  </li>
+                </ul>
               </div>
             </Card>
           </div>
@@ -647,7 +696,7 @@ export const HomePageEnhanced: React.FC = () => {
             <button
               type="button"
               onClick={() => navigate('/settings')}
-              className="text-gray-500 hover:text-primary-600 transition-colors flex items-center gap-2 font-medium focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 rounded-lg px-2 py-1"
+              className="text-gray-500 hover:text-primary-600 transition-colors flex items-center gap-2 font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded-lg px-2 py-1"
               tabIndex={0}
             >
               <Settings size={18} aria-hidden="true" />
@@ -656,7 +705,7 @@ export const HomePageEnhanced: React.FC = () => {
             <button
               type="button"
               onClick={() => navigate('/progress')}
-              className="text-gray-500 hover:text-primary-600 transition-colors flex items-center gap-2 font-medium focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 rounded-lg px-2 py-1"
+              className="text-gray-500 hover:text-primary-600 transition-colors flex items-center gap-2 font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded-lg px-2 py-1"
               tabIndex={0}
             >
               <BarChart3 size={18} aria-hidden="true" />

@@ -5,8 +5,10 @@ import { Button, Card, Badge, ProgressBar } from '../components/ui';
 import { useProgress } from '../contexts/ProgressContext';
 import { Home, RotateCcw, ArrowRight, Trophy, Target, Clock, Award } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 export const ResultsPage: React.FC = () => {
+  usePageTitle('Resultados');
   const navigate = useNavigate();
   const { sessionId } = useParams<{ sessionId: string }>();
   const { progress } = useProgress();
@@ -91,15 +93,15 @@ export const ResultsPage: React.FC = () => {
               {performance.emoji}
             </motion.div>
 
-            <h1 className="text-4xl font-bold text-gray-900 mb-3">
+            <h1 className="text-4xl font-bold text-gray-900 mb-3" tabIndex={0}>
               {performance.title}
             </h1>
-            <p className="text-xl text-gray-600 mb-8">
+            <p className="text-xl text-gray-600 mb-8" tabIndex={0}>
               {performance.message}
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-              <div className="p-6 bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8" role="list" aria-label="Estadísticas de tu sesión de juego">
+              <div className="p-6 bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl" role="listitem" tabIndex={0} aria-label={`Puntos obtenidos: ${session.score}`}>
                 <div className="flex justify-center mb-3">
                   <Trophy size={32} className="text-primary-600" aria-hidden="true" />
                 </div>
@@ -109,7 +111,7 @@ export const ResultsPage: React.FC = () => {
                 <div className="text-sm text-gray-600">Puntos</div>
               </div>
 
-              <div className="p-6 bg-gradient-to-br from-success-50 to-success-100 rounded-xl">
+              <div className="p-6 bg-gradient-to-br from-success-50 to-success-100 rounded-xl" role="listitem" tabIndex={0} aria-label={`Precisión: ${session.accuracy} por ciento`}>
                 <div className="flex justify-center mb-3">
                   <Target size={32} className="text-success-600" aria-hidden="true" />
                 </div>
@@ -119,7 +121,7 @@ export const ResultsPage: React.FC = () => {
                 <div className="text-sm text-gray-600">Precisión</div>
               </div>
 
-              <div className="p-6 bg-gradient-to-br from-warning-50 to-warning-100 rounded-xl">
+              <div className="p-6 bg-gradient-to-br from-warning-50 to-warning-100 rounded-xl" role="listitem" tabIndex={0} aria-label={`Tiempo: ${Math.floor(session.timeSpent / 60)} minutos ${session.timeSpent % 60} segundos`}>
                 <div className="flex justify-center mb-3">
                   <Clock size={32} className="text-warning-600" aria-hidden="true" />
                 </div>
@@ -129,7 +131,7 @@ export const ResultsPage: React.FC = () => {
                 <div className="text-sm text-gray-600">Tiempo</div>
               </div>
 
-              <div className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
+              <div className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl" role="listitem" tabIndex={0} aria-label={`Rendimiento: ${Math.round(scorePercentage)} por ciento`}>
                 <div className="flex justify-center mb-3">
                   <Award size={32} className="text-purple-600" aria-hidden="true" />
                 </div>
@@ -141,7 +143,7 @@ export const ResultsPage: React.FC = () => {
             </div>
 
             <div className="mb-8">
-              <div className="flex justify-between items-center mb-2">
+              <div className="flex justify-between items-center mb-2" tabIndex={0} aria-label={`Progreso hacia el puntaje máximo: ${session.score} de ${session.maxScore} puntos`}>
                 <span className="text-lg font-medium text-gray-700">
                   Progreso hacia el puntaje máximo
                 </span>

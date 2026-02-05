@@ -113,11 +113,11 @@ export const CountingGame: React.FC<CountingGameProps> = ({ onComplete }) => {
     <div className="max-w-4xl mx-auto">
       {/* Panel de estadísticas */}
       <Card className="mb-4 bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-100">
-        <div className="flex flex-wrap justify-between items-center gap-4">
+        <div className="flex flex-wrap justify-between items-center gap-4" role="status" aria-live="polite">
           <div className="flex items-center gap-6">
-            <div className="text-center">
+            <div className="text-center" tabIndex={0} aria-label={`Ronda ${round} de ${ROUNDS}`}>
               <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
-                <Target className="w-4 h-4 text-indigo-500" />
+                <Target className="w-4 h-4 text-indigo-500" aria-hidden="true" />
                 <span>Ronda</span>
               </div>
               <div className="text-2xl font-bold text-primary-600">
@@ -125,21 +125,21 @@ export const CountingGame: React.FC<CountingGameProps> = ({ onComplete }) => {
               </div>
             </div>
             
-            <div className="h-10 w-px bg-gray-200" />
+            <div className="h-10 w-px bg-gray-200" aria-hidden="true" />
             
-            <div className="text-center">
+            <div className="text-center" tabIndex={0} aria-label={`Puntos: ${score}`}>
               <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
-                <Trophy className="w-4 h-4 text-amber-500" />
+                <Trophy className="w-4 h-4 text-amber-500" aria-hidden="true" />
                 <span>Puntos</span>
               </div>
               <div className="text-2xl font-bold text-success-600">{score}</div>
             </div>
             
-            <div className="h-10 w-px bg-gray-200" />
+            <div className="h-10 w-px bg-gray-200" aria-hidden="true" />
             
-            <div className="text-center">
+            <div className="text-center" tabIndex={0} aria-label={`Tiempo restante: ${timeLeft} segundos`}>
               <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
-                <Clock className="w-4 h-4 text-red-500" />
+                <Clock className="w-4 h-4 text-red-500" aria-hidden="true" />
                 <span>Tiempo</span>
               </div>
               <div className={`text-2xl font-bold ${timeLeft <= 5 ? 'text-error-600 animate-pulse' : 'text-warning-600'}`}>
@@ -162,10 +162,10 @@ export const CountingGame: React.FC<CountingGameProps> = ({ onComplete }) => {
 
       {/* Instrucción */}
       <Card className="mb-4 text-center bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
-        <div className="flex items-center justify-center gap-3">
-          <Hash className="w-6 h-6 text-amber-600" />
+        <div className="flex items-center justify-center gap-3" tabIndex={0} aria-live="polite">
+          <Hash className="w-6 h-6 text-amber-600" aria-hidden="true" />
           <p className="text-lg font-bold text-gray-900">
-            ¿Cuántos <span className="text-3xl mx-2">{roundData.targetEmoji}</span> hay?
+            ¿Cuántos <span className="text-3xl mx-2" aria-label={`emoji ${roundData.targetEmoji}`}>{roundData.targetEmoji}</span> hay?
           </p>
         </div>
       </Card>
@@ -207,7 +207,7 @@ export const CountingGame: React.FC<CountingGameProps> = ({ onComplete }) => {
               className={`
                 py-4 rounded-xl text-2xl font-bold
                 transition-all duration-200
-                focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-400
+                focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-red-500
                 ${showFeedback 
                   ? isCorrect 
                     ? 'bg-green-500 text-white ring-4 ring-green-300' 

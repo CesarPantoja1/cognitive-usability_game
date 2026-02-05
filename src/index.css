@@ -22,7 +22,7 @@
   }
 
   *:focus-visible {
-    @apply outline-none ring-4 ring-primary-400 ring-offset-2 rounded-lg;
+    @apply outline-none ring-4 ring-red-500 ring-offset-2 rounded-lg;
   }
 
   /* Asegurar que los elementos interactivos tengan focus visible */
@@ -35,7 +35,7 @@
   [role="button"]:focus-visible,
   [role="link"]:focus-visible,
   [role="menuitem"]:focus-visible {
-    @apply outline-none ring-4 ring-primary-400 ring-offset-2;
+    @apply outline-none ring-4 ring-red-500 ring-offset-2;
   }
 
   /* Hacer que los elementos con tabindex=0 sean accesibles */
@@ -254,7 +254,7 @@
   @apply bg-primary-200 text-primary-900;
 }
 
-/* Placeholder accesible */
+/* Placeholder accesible - contraste mínimo 4.5:1 (WCAG 1.4.3) */
 ::placeholder {
-  @apply text-gray-400;
+  @apply text-gray-500;
 }

@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LogIn, Mail, Lock, Brain, Eye, EyeOff, Sparkles } from 'lucide-react';
 import { Button } from '../components/ui';
 import { useAuth } from '../contexts/AuthContext';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 export default function LoginPage() {
+  usePageTitle('Iniciar Sesión');
   const navigate = useNavigate();
   const { login } = useAuth();
   const [formData, setFormData] = useState({
@@ -102,8 +104,8 @@ export default function LoginPage() {
                 <Brain className="w-10 h-10" aria-hidden="true" />
               </motion.div>
 
-              <h1 className="text-3xl font-bold mb-2">¡Bienvenido de vuelta!</h1>
-              <p className="text-white/80 flex items-center gap-2">
+              <h1 className="text-3xl font-bold mb-2" tabIndex={0}>¡Bienvenido de vuelta!</h1>
+              <p className="text-white/80 flex items-center gap-2" tabIndex={0}>
                 <Sparkles className="w-4 h-4" aria-hidden="true" />
                 Continúa tu entrenamiento cognitivo
               </p>
@@ -120,6 +122,7 @@ export default function LoginPage() {
                   id="login-error"
                   role="alert"
                   aria-live="assertive"
+                  tabIndex={0}
                   className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm"
                 >
                   <span className="font-medium">⚠️ {error}</span>
@@ -151,7 +154,7 @@ export default function LoginPage() {
                     aria-label="Correo electrónico"
                     aria-describedby={error ? "login-error" : undefined}
                     autoComplete="email"
-                    className="block w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    className="block w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
                     placeholder="ejemplo@correo.com"
                   />
                 </div>
@@ -175,7 +178,7 @@ export default function LoginPage() {
                     required
                     aria-label="Contraseña"
                     autoComplete="current-password"
-                    className="block w-full pl-12 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    className="block w-full pl-12 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
                     placeholder="••••••••"
                   />
                   <button
@@ -183,7 +186,7 @@ export default function LoginPage() {
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                     aria-pressed={showPassword}
-                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 rounded"
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 rounded"
                   >
                     {showPassword ? (
                       <EyeOff className="h-5 w-5" aria-hidden="true" />
@@ -221,27 +224,26 @@ export default function LoginPage() {
             </form>
 
             {/* Divider */}
-            <div className="relative my-8">
+            <div className="relative my-8" role="separator" aria-orientation="horizontal">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-200"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500">¿No tienes cuenta?</span>
+                <span className="px-4 bg-white text-gray-500" tabIndex={0}>¿No tienes cuenta?</span>
               </div>
             </div>
 
-            {/* Register Link */}
-            <Link to="/register" className="block">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                type="button"
-                aria-label="Crear una cuenta nueva para comenzar a entrenar"
-                className="w-full py-3 text-primary-600 font-semibold rounded-xl border-2 border-primary-600 hover:bg-primary-50 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
-              >
-                Crear cuenta gratuita
-              </motion.button>
-            </Link>
+            {/* Register Link - Usando navigate en lugar de Link anidado (WCAG 4.1.1) */}
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              type="button"
+              onClick={() => navigate('/register')}
+              aria-label="Crear una cuenta nueva para comenzar a entrenar"
+              className="w-full py-3 text-primary-600 font-semibold rounded-xl border-2 border-primary-600 hover:bg-primary-50 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+            >
+              Crear cuenta gratuita
+            </motion.button>
           </div>
         </div>
 
@@ -251,6 +253,8 @@ export default function LoginPage() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
           className="text-center mt-6 text-white/80 text-sm"
+          tabIndex={0}
+          role="contentinfo"
         >
           © 2024 Entrenamiento Cognitivo. Todos los derechos reservados.
         </motion.p>

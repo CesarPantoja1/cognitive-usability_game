@@ -50,18 +50,18 @@ export const LogicGame: React.FC<LogicGameProps> = ({ onComplete }) => {
   return (
     <div className="max-w-4xl mx-auto">
       <Card className="mb-6">
-        <div className="flex justify-between items-center">
-          <div>
+        <div className="flex justify-between items-center" role="status" aria-live="polite">
+          <div tabIndex={0} aria-label={`Pregunta ${currentPattern + 1} de ${PATTERNS.length}`}>
             <div className="text-sm text-gray-600">Pregunta</div>
             <div className="text-3xl font-bold text-primary-600">
               {currentPattern + 1} / {PATTERNS.length}
             </div>
           </div>
-          <div>
+          <div tabIndex={0} aria-label={`Puntos: ${score}`}>
             <div className="text-sm text-gray-600">Puntos</div>
             <div className="text-3xl font-bold text-success-600">{score}</div>
           </div>
-          <div>
+          <div tabIndex={0} aria-label={`Respuestas correctas: ${correctAnswers}`}>
             <div className="text-sm text-gray-600">Correctas</div>
             <div className="text-3xl font-bold text-warning-600">{correctAnswers}</div>
           </div>
@@ -69,7 +69,7 @@ export const LogicGame: React.FC<LogicGameProps> = ({ onComplete }) => {
       </Card>
 
       <Card className="mb-8">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-6 text-center">
+        <h2 className="text-2xl font-semibold text-gray-900 mb-6 text-center" tabIndex={0}>
           ¿Cuál figura completa el patrón?
         </h2>
 
@@ -92,6 +92,9 @@ export const LogicGame: React.FC<LogicGameProps> = ({ onComplete }) => {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
+            role="alert"
+            aria-live="assertive"
+            tabIndex={0}
             className={`text-center p-4 rounded-lg mb-6 ${
               feedback === 'correct'
                 ? 'bg-success-100 text-success-800'
@@ -124,7 +127,7 @@ export const LogicGame: React.FC<LogicGameProps> = ({ onComplete }) => {
                 aspect-square rounded-xl bg-white border-4 border-gray-300
                 hover:border-primary-400 hover:shadow-lg
                 transition-all duration-200 text-6xl
-                focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-400 focus-visible:ring-offset-2
+                focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-red-500 focus-visible:ring-offset-2
                 disabled:opacity-50 disabled:cursor-not-allowed
               `}
               whileHover={!feedback ? { scale: 1.05 } : {}}

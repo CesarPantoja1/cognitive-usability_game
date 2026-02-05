@@ -44,26 +44,26 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       primary: `
         bg-primary-600 text-white
         hover:bg-primary-700 active:bg-primary-800
-        focus-visible:ring-primary-400
+        focus-visible:ring-red-500
         shadow-lg hover:shadow-xl
       `,
       secondary: `
         bg-white text-primary-700
         border-2 border-primary-600
         hover:bg-primary-50 active:bg-primary-100
-        focus-visible:ring-primary-400
+        focus-visible:ring-red-500
         shadow-md hover:shadow-lg
       `,
       success: `
         bg-success-600 text-white
         hover:bg-success-700 active:bg-success-800
-        focus-visible:ring-success-400
+        focus-visible:ring-red-500
         shadow-lg hover:shadow-xl
       `,
       danger: `
         bg-error-600 text-white
         hover:bg-error-700 active:bg-error-800
-        focus-visible:ring-error-400
+        focus-visible:ring-red-500
         shadow-lg hover:shadow-xl
       `,
     };

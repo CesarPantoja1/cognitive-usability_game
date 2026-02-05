@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Button, Card } from '../components/ui';
 import { FeedbackEmotion } from '../types/index';
 import { Smile, Meh, Frown, SmilePlus, Angry } from 'lucide-react';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const emotionOptions: Array<{
   value: FeedbackEmotion;
@@ -44,6 +45,7 @@ const emotionOptions: Array<{
 ];
 
 export const FeedbackPage: React.FC = () => {
+  usePageTitle('Tu Opinión');
   const navigate = useNavigate();
   const { sessionId } = useParams<{ sessionId: string }>();
   const [selectedEmotion, setSelectedEmotion] = useState<FeedbackEmotion | null>(null);
@@ -69,13 +71,13 @@ export const FeedbackPage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
         >
           <Card className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4" tabIndex={0}>
               ¿Cómo te sentiste jugando?
             </h1>
-            <p className="text-lg text-gray-600 mb-4">
+            <p className="text-lg text-gray-600 mb-4" tabIndex={0}>
               Selecciona la emocion que mejor describe tu experiencia
             </p>
-            <p className="text-sm text-gray-500 mb-12">
+            <p className="text-sm text-gray-500 mb-12" tabIndex={0}>
               Tu respuesta nos ayuda a mejorar los juegos
             </p>
 
@@ -99,7 +101,7 @@ export const FeedbackPage: React.FC = () => {
                         : 'border-gray-200 bg-white hover:border-gray-300'
                     }
                     ${option.color}
-                    focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-400 focus-visible:ring-offset-2
+                    focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-red-500 focus-visible:ring-offset-2
                   `}
                   whileHover={{ scale: selectedEmotion === option.value ? 1.05 : 1.02 }}
                   whileTap={{ scale: 0.95 }}

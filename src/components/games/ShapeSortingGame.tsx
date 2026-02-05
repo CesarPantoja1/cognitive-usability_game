@@ -212,11 +212,11 @@ export const ShapeSortingGame: React.FC<ShapeSortingGameProps> = ({ onComplete }
     <div className="max-w-4xl mx-auto">
       {/* Panel de estadísticas */}
       <Card className="mb-4 bg-gradient-to-r from-indigo-50 to-blue-50 border-indigo-100">
-        <div className="flex flex-wrap justify-between items-center gap-4">
+        <div className="flex flex-wrap justify-between items-center gap-4" role="status" aria-live="polite">
           <div className="flex items-center gap-6">
-            <div className="text-center">
+            <div className="text-center" tabIndex={0} aria-label={`Ronda ${round} de ${ROUNDS}`}>
               <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
-                <Target className="w-4 h-4 text-indigo-500" />
+                <Target className="w-4 h-4 text-indigo-500" aria-hidden="true" />
                 <span>Ronda</span>
               </div>
               <div className="text-2xl font-bold text-primary-600">
@@ -224,21 +224,21 @@ export const ShapeSortingGame: React.FC<ShapeSortingGameProps> = ({ onComplete }
               </div>
             </div>
             
-            <div className="h-10 w-px bg-gray-200" />
+            <div className="h-10 w-px bg-gray-200" aria-hidden="true" />
             
-            <div className="text-center">
+            <div className="text-center" tabIndex={0} aria-label={`Puntos: ${score}`}>
               <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
-                <Trophy className="w-4 h-4 text-amber-500" />
+                <Trophy className="w-4 h-4 text-amber-500" aria-hidden="true" />
                 <span>Puntos</span>
               </div>
               <div className="text-2xl font-bold text-success-600">{score}</div>
             </div>
             
-            <div className="h-10 w-px bg-gray-200" />
+            <div className="h-10 w-px bg-gray-200" aria-hidden="true" />
             
-            <div className="text-center">
+            <div className="text-center" tabIndex={0} aria-label={`Respuestas correctas: ${correctAnswers}`}>
               <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
-                <CheckCircle className="w-4 h-4 text-green-500" />
+                <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
                 <span>Correctas</span>
               </div>
               <div className="text-2xl font-bold text-green-600">{correctAnswers}</div>
@@ -259,8 +259,8 @@ export const ShapeSortingGame: React.FC<ShapeSortingGameProps> = ({ onComplete }
 
       {/* Pregunta */}
       <Card className="mb-4 text-center bg-gradient-to-r from-cyan-50 to-teal-50 border-cyan-200">
-        <div className="flex items-center justify-center gap-2">
-          <Shapes className="w-6 h-6 text-cyan-600" />
+        <div className="flex items-center justify-center gap-2" tabIndex={0} aria-live="polite">
+          <Shapes className="w-6 h-6 text-cyan-600" aria-hidden="true" />
           <p className="text-xl font-bold text-gray-900">
             {roundData.question}
           </p>
@@ -306,7 +306,7 @@ export const ShapeSortingGame: React.FC<ShapeSortingGameProps> = ({ onComplete }
               className={`
                 h-16 sm:h-20 rounded-xl font-bold text-2xl
                 transition-all duration-200 relative
-                focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-400 focus-visible:ring-offset-2
+                focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-red-500 focus-visible:ring-offset-2
                 ${showFeedback 
                   ? isCorrect 
                     ? 'bg-green-500 text-white ring-4 ring-green-300' 

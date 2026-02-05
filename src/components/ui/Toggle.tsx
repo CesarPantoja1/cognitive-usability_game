@@ -55,7 +55,7 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
           title={checked ? `${label}: Activado` : `${label}: Desactivado`}
           className={clsx(
             'relative inline-flex h-8 w-14 items-center rounded-full transition-colors',
-            'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-400 focus-visible:ring-offset-2',
+            'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-red-500 focus-visible:ring-offset-2',
             'disabled:opacity-50 disabled:cursor-not-allowed',
             checked ? 'bg-primary-600' : 'bg-gray-300'
           )}

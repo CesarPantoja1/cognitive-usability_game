@@ -16,3 +16,6 @@ export type { BadgeProps } from './Badge';
 
 export { Toggle } from './Toggle';
 export type { ToggleProps } from './Toggle';
+
+export { ConfirmDialog } from './ConfirmDialog';
+export type { ConfirmDialogProps } from './ConfirmDialog';

@@ -143,11 +143,11 @@ export const ReactionGame: React.FC<ReactionGameProps> = ({ onComplete }) => {
     <div className="max-w-4xl mx-auto">
       {/* Panel de estadísticas */}
       <Card className="mb-6 bg-gradient-to-r from-slate-50 to-gray-50">
-        <div className="flex flex-wrap justify-between items-center gap-4">
+        <div className="flex flex-wrap justify-between items-center gap-4" role="status" aria-live="polite">
           <div className="flex items-center gap-6">
-            <div className="text-center">
+            <div className="text-center" tabIndex={0} aria-label={`Ronda ${round + 1} de ${ROUNDS}`}>
               <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
-                <Target className="w-4 h-4 text-primary-500" />
+                <Target className="w-4 h-4 text-primary-500" aria-hidden="true" />
                 <span>Ronda</span>
               </div>
               <div className="text-2xl font-bold text-primary-600">
@@ -155,11 +155,11 @@ export const ReactionGame: React.FC<ReactionGameProps> = ({ onComplete }) => {
               </div>
             </div>
             
-            <div className="h-12 w-px bg-gray-200" />
+            <div className="h-12 w-px bg-gray-200" aria-hidden="true" />
             
-            <div className="text-center">
+            <div className="text-center" tabIndex={0} aria-label={`Tiempo promedio: ${avgTime > 0 ? avgTime + ' milisegundos' : 'sin datos'}`}>
               <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
-                <Clock className="w-4 h-4 text-amber-500" />
+                <Clock className="w-4 h-4 text-amber-500" aria-hidden="true" />
                 <span>Promedio</span>
               </div>
               <div className="text-2xl font-bold text-amber-600">
@@ -167,11 +167,11 @@ export const ReactionGame: React.FC<ReactionGameProps> = ({ onComplete }) => {
               </div>
             </div>
             
-            <div className="h-12 w-px bg-gray-200" />
+            <div className="h-12 w-px bg-gray-200" aria-hidden="true" />
             
-            <div className="text-center">
+            <div className="text-center" tabIndex={0} aria-label={`Mejor tiempo: ${bestTime > 0 ? bestTime + ' milisegundos' : 'sin datos'}`}>
               <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
-                <Zap className="w-4 h-4 text-green-500" />
+                <Zap className="w-4 h-4 text-green-500" aria-hidden="true" />
                 <span>Mejor</span>
               </div>
               <div className="text-2xl font-bold text-green-600">
@@ -246,15 +246,18 @@ export const ReactionGame: React.FC<ReactionGameProps> = ({ onComplete }) => {
           className="mt-6"
         >
           <Card>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4" tabIndex={0}>
               Tiempos de reacción
             </h3>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3" role="list" aria-label="Historial de tiempos de reacción">
               {reactionTimes.map((time, index) => (
                 <motion.div
                   key={index}
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
+                  tabIndex={0}
+                  role="listitem"
+                  aria-label={`Intento ${index + 1}: ${time} milisegundos`}
                   className={`
                     px-4 py-2 rounded-xl font-semibold
                     ${time < 250 
@@ -276,12 +279,12 @@ export const ReactionGame: React.FC<ReactionGameProps> = ({ onComplete }) => {
       {/* Instrucciones */}
       <Card className="mt-6 bg-gradient-to-r from-primary-50 to-indigo-50 border-primary-100">
         <div className="flex items-start gap-4">
-          <div className="flex-shrink-0 w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center">
+          <div className="flex-shrink-0 w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center" aria-hidden="true">
             <AlertCircle className="w-5 h-5 text-primary-600" />
           </div>
           <div>
-            <h3 className="font-semibold text-gray-900 mb-1">Cómo jugar</h3>
-            <p className="text-gray-600 text-sm">
+            <h3 className="font-semibold text-gray-900 mb-1" tabIndex={0}>Cómo jugar</h3>
+            <p className="text-gray-600 text-sm" tabIndex={0}>
               Espera a que la pantalla se ponga <span className="font-semibold text-green-600">VERDE</span> y 
               haz clic lo más rápido posible. ¡Cuidado! Si haces clic antes de tiempo, tendrás que 
               esperar de nuevo.

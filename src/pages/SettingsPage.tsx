@@ -4,8 +4,10 @@ import { motion } from 'framer-motion';
 import { Button, Card, Toggle } from '../components/ui';
 import { useAccessibility } from '../contexts/AccessibilityContext';
 import { ArrowLeft, Settings as SettingsIcon } from 'lucide-react';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 export const SettingsPage: React.FC = () => {
+  usePageTitle('Configuración');
   const navigate = useNavigate();
   const {
     settings,
@@ -13,6 +15,7 @@ export const SettingsPage: React.FC = () => {
     toggleSubtitles,
     toggleSound,
     toggleReducedMotion,
+    toggleExtendedTime,
     setFontSize,
   } = useAccessibility();
 
@@ -38,17 +41,17 @@ export const SettingsPage: React.FC = () => {
           <div className="w-20 h-20 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <SettingsIcon size={40} className="text-primary-600" aria-hidden="true" />
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2" tabIndex={0}>
             Configuración
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-gray-600" tabIndex={0}>
             Personaliza la aplicación según tus necesidades
           </p>
         </div>
 
         <Card className="space-y-8">
           {/* Feedback de guardado automático */}
-          <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 px-4 py-2 rounded-lg" role="status" aria-live="polite">
+          <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 px-4 py-2 rounded-lg" role="status" aria-live="polite" tabIndex={0}>
             <span aria-hidden="true">✓</span>
             <span>Los cambios se guardan automáticamente</span>
           </div>
@@ -90,6 +93,13 @@ export const SettingsPage: React.FC = () => {
                 onCheckedChange={toggleReducedMotion}
               />
 
+              <Toggle
+                label="Tiempo Extendido"
+                description="Duplica el tiempo disponible en juegos con límite de tiempo (WCAG 2.2.1)"
+                checked={settings.extendedTime}
+                onCheckedChange={toggleExtendedTime}
+              />
+
               <div>
                 <label
                   htmlFor="font-size"
@@ -123,18 +133,19 @@ export const SettingsPage: React.FC = () => {
             <h2
               id="info-heading"
               className="text-2xl font-semibold text-gray-900 mb-4 pb-3 border-b-2 border-gray-200"
+              tabIndex={0}
             >
               Información
             </h2>
             <div className="space-y-3 text-gray-700">
-              <p>
+              <p tabIndex={0}>
                 <strong>Versión:</strong> 1.0.0
               </p>
-              <p>
+              <p tabIndex={0}>
                 <strong>Accesibilidad:</strong> Esta aplicación está diseñada
                 específicamente para personas con discapacidad auditiva moderada.
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500" tabIndex={0}>
                 Toda la información importante se presenta visualmente con iconos,
                 colores y texto claro. Los sonidos son opcionales y complementarios.
               </p>

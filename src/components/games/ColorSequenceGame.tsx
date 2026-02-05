@@ -133,11 +133,11 @@ export const ColorSequenceGame: React.FC<ColorSequenceGameProps> = ({ onComplete
     <div className="max-w-4xl mx-auto">
       {/* Panel de estadísticas */}
       <Card className="mb-4 bg-gradient-to-r from-pink-50 to-rose-50 border-pink-100">
-        <div className="flex flex-wrap justify-between items-center gap-4">
+        <div className="flex flex-wrap justify-between items-center gap-4" role="status" aria-live="polite">
           <div className="flex items-center gap-6">
-            <div className="text-center">
+            <div className="text-center" tabIndex={0} aria-label={`Ronda ${round} de ${ROUNDS}`}>
               <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
-                <Target className="w-4 h-4 text-pink-500" />
+                <Target className="w-4 h-4 text-pink-500" aria-hidden="true" />
                 <span>Ronda</span>
               </div>
               <div className="text-2xl font-bold text-primary-600">
@@ -145,21 +145,21 @@ export const ColorSequenceGame: React.FC<ColorSequenceGameProps> = ({ onComplete
               </div>
             </div>
             
-            <div className="h-10 w-px bg-gray-200" />
+            <div className="h-10 w-px bg-gray-200" aria-hidden="true" />
             
-            <div className="text-center">
+            <div className="text-center" tabIndex={0} aria-label={`Puntos: ${score}`}>
               <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
-                <Trophy className="w-4 h-4 text-amber-500" />
+                <Trophy className="w-4 h-4 text-amber-500" aria-hidden="true" />
                 <span>Puntos</span>
               </div>
               <div className="text-2xl font-bold text-success-600">{score}</div>
             </div>
             
-            <div className="h-10 w-px bg-gray-200" />
+            <div className="h-10 w-px bg-gray-200" aria-hidden="true" />
             
-            <div className="text-center">
+            <div className="text-center" tabIndex={0} aria-label={`Respuestas correctas: ${correctAnswers}`}>
               <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
-                <CheckCircle className="w-4 h-4 text-green-500" />
+                <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
                 <span>Correctas</span>
               </div>
               <div className="text-2xl font-bold text-green-600">{correctAnswers}</div>
@@ -180,8 +180,8 @@ export const ColorSequenceGame: React.FC<ColorSequenceGameProps> = ({ onComplete
 
       {/* Instrucción */}
       <Card className="mb-4 text-center bg-gradient-to-r from-violet-50 to-purple-50 border-violet-200">
-        <div className="flex items-center justify-center gap-2">
-          <Palette className="w-6 h-6 text-violet-600" />
+        <div className="flex items-center justify-center gap-2" tabIndex={0}>
+          <Palette className="w-6 h-6 text-violet-600" aria-hidden="true" />
           <p className="text-lg font-bold text-gray-900">
             ¿Qué color sigue en la secuencia?
           </p>

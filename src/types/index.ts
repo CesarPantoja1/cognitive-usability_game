@@ -67,6 +67,7 @@ export interface AccessibilitySettings {
   soundEnabled: boolean;
   fontSize: 'normal' | 'large' | 'extra-large';
   reducedMotion: boolean;
+  extendedTime: boolean; // WCAG 2.2.1: Tiempo ajustable para usuarios que necesitan más tiempo
 }
 
 /**

@@ -31,6 +31,7 @@ export const MemoryGame: React.FC<MemoryGameProps> = ({ onComplete }) => {
   const [matches, setMatches] = useState(0);
   const [isChecking, setIsChecking] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
+  const [announcement, setAnnouncement] = useState(''); // WCAG 4.1.3: Live region para anuncios
   const [currentEmojiSet] = useState(() => 
     EMOJI_SETS[Math.floor(Math.random() * EMOJI_SETS.length)]
   );
@@ -100,6 +101,8 @@ export const MemoryGame: React.FC<MemoryGameProps> = ({ onComplete }) => {
     const secondCard = cards.find(c => c.id === secondId);
 
     if (firstCard && secondCard && firstCard.pairId === secondCard.pairId) {
+      // ¡Pareja encontrada!
+      setAnnouncement(`¡Pareja encontrada! ${firstCard.emoji}`);
       setTimeout(() => {
         setCards(prev => prev.map(c =>
           c.id === firstId || c.id === secondId
@@ -116,6 +119,8 @@ export const MemoryGame: React.FC<MemoryGameProps> = ({ onComplete }) => {
         }
       }, 600);
     } else {
+      // No hay coincidencia
+      setAnnouncement('No hay coincidencia. Intenta de nuevo.');
       setTimeout(() => {
         setCards(prev => prev.map(c =>
           c.id === firstId || c.id === secondId
@@ -143,11 +148,21 @@ export const MemoryGame: React.FC<MemoryGameProps> = ({ onComplete }) => {
 
   return (
     <div className="max-w-4xl mx-auto" role="main" aria-label="Juego de memoria">
+      {/* Live region para anuncios de accesibilidad (WCAG 4.1.3) */}
+      <div 
+        role="status" 
+        aria-live="polite" 
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {announcement}
+      </div>
+      
       {/* Panel de estadísticas */}
       <Card className="mb-6 bg-gradient-to-r from-primary-50 to-indigo-50 border-primary-100">
         <div className="flex flex-wrap justify-between items-center gap-4" role="status" aria-live="polite">
           <div className="flex items-center gap-6">
-            <div className="text-center">
+            <div className="text-center" tabIndex={0} aria-label={`Movimientos realizados: ${moves}`}>
               <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
                 <Zap className="w-4 h-4 text-amber-500" aria-hidden="true" />
                 <span id="moves-label">Movimientos</span>
@@ -157,7 +172,7 @@ export const MemoryGame: React.FC<MemoryGameProps> = ({ onComplete }) => {
             
             <div className="h-12 w-px bg-gray-200" aria-hidden="true" />
             
-            <div className="text-center">
+            <div className="text-center" tabIndex={0} aria-label={`Parejas encontradas: ${matches} de ${CARDS_COUNT / 2}`}>
               <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
                 <Trophy className="w-4 h-4 text-green-500" aria-hidden="true" />
                 <span id="pairs-label">Parejas</span>
@@ -193,7 +208,7 @@ export const MemoryGame: React.FC<MemoryGameProps> = ({ onComplete }) => {
 
       {/* Tablero de cartas */}
       <div 
-        className="grid grid-cols-4 gap-2 sm:gap-3" 
+        className="grid grid-cols-4 gap-1.5 sm:gap-2 max-w-md mx-auto" 
         role="grid" 
         aria-label={`Tablero de memoria con ${CARDS_COUNT} cartas. ${matches} parejas encontradas de ${CARDS_COUNT / 2}.`}
       >
@@ -202,17 +217,19 @@ export const MemoryGame: React.FC<MemoryGameProps> = ({ onComplete }) => {
             <motion.button
               key={card.id}
               onClick={() => handleCardClick(card.id)}
+              tabIndex={0}
               className={`
-                aspect-square rounded-lg sm:rounded-xl text-2xl sm:text-3xl
+                aspect-square rounded-md sm:rounded-lg text-xl sm:text-2xl
                 flex items-center justify-center
                 font-bold transition-all duration-300
-                focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-400 focus-visible:ring-offset-2
+                focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-red-500 focus-visible:ring-offset-2
                 relative overflow-hidden
+                w-16 h-16 sm:w-20 sm:h-20
                 ${
                   card.isMatched
-                    ? 'bg-gradient-to-br from-green-100 to-emerald-100 border-4 border-green-400 cursor-default'
+                    ? 'bg-gradient-to-br from-green-100 to-emerald-100 border-2 sm:border-3 border-green-400 cursor-default'
                     : card.isFlipped
-                    ? 'bg-white border-4 border-primary-400 shadow-lg'
+                    ? 'bg-white border-2 sm:border-3 border-primary-400 shadow-lg'
                     : 'bg-gradient-to-br from-primary-500 to-indigo-600 hover:from-primary-600 hover:to-indigo-700 cursor-pointer shadow-md hover:shadow-xl'
                 }
               `}
@@ -226,17 +243,19 @@ export const MemoryGame: React.FC<MemoryGameProps> = ({ onComplete }) => {
                   ? `Carta volteada: ${card.emoji}`
                   : 'Carta oculta - clic para voltear'
               }
+              aria-live={card.isFlipped && !card.isMatched ? "polite" : undefined}
             >
               {card.isFlipped || card.isMatched ? (
                 <motion.span
                   initial={{ rotateY: 90, scale: 0.5 }}
                   animate={{ rotateY: 0, scale: 1 }}
                   transition={{ duration: 0.3 }}
+                  aria-hidden="true"
                 >
                   {card.emoji}
                 </motion.span>
               ) : (
-                <span className="text-white text-xl">?</span>
+                <span className="text-white text-lg sm:text-xl" aria-hidden="true">?</span>
               )}
               
               {/* Efecto de brillo en tarjetas emparejadas */}

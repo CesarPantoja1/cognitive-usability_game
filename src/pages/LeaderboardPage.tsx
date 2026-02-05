@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Card, Button } from '../components/ui';
 import { useAuth } from '../contexts/AuthContext';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 // Tipos
 interface LeaderboardUser {
@@ -165,7 +166,7 @@ const UserCard: React.FC<{
       tabIndex={0}
       aria-label={`${user.name}, posición ${rank}, ${stat.value} ${stat.label}${isCurrentUser ? ', tu perfil' : ''}`}
       className={`
-        relative p-4 rounded-xl transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2
+        relative p-4 rounded-xl transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2
         ${isCurrentUser 
           ? 'bg-gradient-to-r from-primary-50 to-purple-50 border-2 border-primary-300 shadow-lg shadow-primary-500/10' 
           : 'bg-white hover:bg-gray-50 border border-gray-100'
@@ -223,6 +224,8 @@ export default function LeaderboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortBy>('score');
   const [showFilters, setShowFilters] = useState(false);
+  
+  usePageTitle('Tabla de Posiciones');
   
   // Cargar usuarios
   useEffect(() => {
@@ -420,7 +423,7 @@ export default function LeaderboardPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 aria-label="Buscar jugador por nombre"
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
               />
             </div>
             
@@ -431,7 +434,7 @@ export default function LeaderboardPage() {
                 aria-expanded={showFilters}
                 aria-haspopup="listbox"
                 aria-label={`Ordenar por ${sortOptions.find(o => o.value === sortBy)?.label}. Click para cambiar`}
-                className="flex items-center gap-2 px-4 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors w-full sm:w-auto justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+                className="flex items-center gap-2 px-4 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors w-full sm:w-auto justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
               >
                 <Filter className="w-4 h-4 text-gray-500" aria-hidden="true" />
                 <span className="text-gray-700">

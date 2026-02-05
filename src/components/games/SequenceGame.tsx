@@ -93,26 +93,26 @@ export const SequenceGame: React.FC<SequenceGameProps> = ({ onComplete }) => {
     <div className="max-w-4xl mx-auto">
       {/* Panel de estadísticas */}
       <Card className="mb-4 bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-100">
-        <div className="flex justify-between items-center">
-          <div className="text-center">
+        <div className="flex justify-between items-center" role="status" aria-live="polite">
+          <div className="text-center" tabIndex={0} aria-label={`Nivel ${level}`}>
             <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
-              <Zap className="w-4 h-4 text-purple-500" />
+              <Zap className="w-4 h-4 text-purple-500" aria-hidden="true" />
               <span>Nivel</span>
             </div>
             <div className="text-2xl font-bold text-primary-600">{level}</div>
           </div>
-          <div className="h-10 w-px bg-gray-200" />
-          <div className="text-center">
+          <div className="h-10 w-px bg-gray-200" aria-hidden="true" />
+          <div className="text-center" tabIndex={0} aria-label={`Puntos: ${score}`}>
             <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
-              <Trophy className="w-4 h-4 text-amber-500" />
+              <Trophy className="w-4 h-4 text-amber-500" aria-hidden="true" />
               <span>Puntos</span>
             </div>
             <div className="text-2xl font-bold text-success-600">{score}</div>
           </div>
-          <div className="h-10 w-px bg-gray-200" />
-          <div className="text-center">
+          <div className="h-10 w-px bg-gray-200" aria-hidden="true" />
+          <div className="text-center" tabIndex={0} aria-label={`Longitud de la secuencia: ${sequence.length}`}>
             <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
-              <Eye className="w-4 h-4 text-indigo-500" />
+              <Eye className="w-4 h-4 text-indigo-500" aria-hidden="true" />
               <span>Secuencia</span>
             </div>
             <div className="text-2xl font-bold text-warning-600">{sequence.length}</div>
@@ -128,7 +128,7 @@ export const SequenceGame: React.FC<SequenceGameProps> = ({ onComplete }) => {
             ? 'bg-gradient-to-r from-green-100 to-emerald-100 border-green-300'
             : 'bg-gray-50'
       }`}>
-        <p className="text-lg font-bold text-gray-900">
+        <p className="text-lg font-bold text-gray-900" role="status" aria-live="assertive" tabIndex={0}>
           {isPlaying
             ? '👀 ¡Observa la secuencia!'
             : isUserTurn
@@ -136,7 +136,7 @@ export const SequenceGame: React.FC<SequenceGameProps> = ({ onComplete }) => {
             : '⏳ Preparando...'}
         </p>
         {isUserTurn && (
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-sm text-gray-600 mt-1" aria-live="polite">
             Paso {userSequence.length + 1} de {sequence.length}
           </p>
         )}

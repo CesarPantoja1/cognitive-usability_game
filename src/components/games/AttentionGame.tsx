@@ -129,11 +129,11 @@ export const AttentionGame: React.FC<AttentionGameProps> = ({ onComplete }) => {
     <div className="max-w-4xl mx-auto">
       {/* Panel de estadísticas */}
       <Card className="mb-6 bg-gradient-to-r from-orange-50 to-amber-50 border-orange-100">
-        <div className="flex flex-wrap justify-between items-center gap-4">
+        <div className="flex flex-wrap justify-between items-center gap-4" role="status" aria-live="polite">
           <div className="flex items-center gap-6">
-            <div className="text-center">
+            <div className="text-center" tabIndex={0} aria-label={`Ronda ${round} de ${ROUNDS}`}>
               <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
-                <Target className="w-4 h-4 text-orange-500" />
+                <Target className="w-4 h-4 text-orange-500" aria-hidden="true" />
                 <span>Ronda</span>
               </div>
               <div className="text-2xl font-bold text-primary-600">
@@ -141,21 +141,21 @@ export const AttentionGame: React.FC<AttentionGameProps> = ({ onComplete }) => {
               </div>
             </div>
             
-            <div className="h-12 w-px bg-gray-200" />
+            <div className="h-12 w-px bg-gray-200" aria-hidden="true" />
             
-            <div className="text-center">
+            <div className="text-center" tabIndex={0} aria-label={`Puntos: ${score}`}>
               <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
-                <Trophy className="w-4 h-4 text-amber-500" />
+                <Trophy className="w-4 h-4 text-amber-500" aria-hidden="true" />
                 <span>Puntos</span>
               </div>
               <div className="text-2xl font-bold text-success-600">{score}</div>
             </div>
             
-            <div className="h-12 w-px bg-gray-200" />
+            <div className="h-12 w-px bg-gray-200" aria-hidden="true" />
             
-            <div className="text-center">
+            <div className="text-center" tabIndex={0} aria-label={`Tiempo restante: ${timeLeft} segundos`}>
               <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
-                <Clock className="w-4 h-4 text-red-500" />
+                <Clock className="w-4 h-4 text-red-500" aria-hidden="true" />
                 <span>Tiempo</span>
               </div>
               <div className={`text-2xl font-bold ${timeLeft <= 3 ? 'text-error-600 animate-pulse' : 'text-warning-600'}`}>
@@ -180,19 +180,20 @@ export const AttentionGame: React.FC<AttentionGameProps> = ({ onComplete }) => {
       {/* Instrucción */}
       <Card className="mb-6 text-center bg-gradient-to-r from-primary-50 to-indigo-50 border-primary-100 relative overflow-hidden">
         <div className="relative z-10">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Eye className="w-6 h-6 text-primary-600" />
+          <div className="flex items-center justify-center gap-2 mb-2" tabIndex={0}>
+            <Eye className="w-6 h-6 text-primary-600" aria-hidden="true" />
             <p className="text-xl font-bold text-gray-900">
               Encuentra la forma DIFERENTE
             </p>
           </div>
-          <div className="flex items-center justify-center gap-4">
+          <div className="flex items-center justify-center gap-4" aria-live="polite" tabIndex={0}>
             <span className="text-gray-600">La mayoría son:</span>
             <motion.span 
               key={targetShape}
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               className="text-5xl"
+              aria-label={`Forma objetivo: ${targetShape}`}
             >
               {targetShape}
             </motion.span>
@@ -223,7 +224,7 @@ export const AttentionGame: React.FC<AttentionGameProps> = ({ onComplete }) => {
                 aspect-square rounded-lg sm:rounded-xl bg-white border-2 sm:border-4
                 transition-all duration-200 text-2xl sm:text-3xl
                 flex items-center justify-center
-                focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-400 focus-visible:ring-offset-2
+                focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-red-500 focus-visible:ring-offset-2
                 ${isCorrectAnswer 
                   ? 'border-green-400 bg-green-100 ring-4 ring-green-300' 
                   : showFeedback && index === differentIndex
@@ -258,6 +259,9 @@ export const AttentionGame: React.FC<AttentionGameProps> = ({ onComplete }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
+            role="alert"
+            aria-live="assertive"
+            tabIndex={0}
             className={`mt-6 p-4 rounded-xl text-center font-bold text-lg ${
               showFeedback === 'correct'
                 ? 'bg-green-100 text-green-700 border-2 border-green-300'
@@ -266,7 +270,7 @@ export const AttentionGame: React.FC<AttentionGameProps> = ({ onComplete }) => {
           >
             {showFeedback === 'correct' ? (
               <span className="flex items-center justify-center gap-2">
-                <Zap className="w-5 h-5" />
+                <Zap className="w-5 h-5" aria-hidden="true" />
                 ¡Correcto! +{timeLeft * 15 + 100} puntos
               </span>
             ) : (

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   UserPlus, 
@@ -17,8 +17,10 @@ import {
 } from 'lucide-react';
 import { Button } from '../components/ui';
 import { useAuth } from '../contexts/AuthContext';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 export default function RegisterPage() {
+  usePageTitle('Crear Cuenta');
   const navigate = useNavigate();
   const { register } = useAuth();
   const [formData, setFormData] = useState({
@@ -164,8 +166,8 @@ export default function RegisterPage() {
                 <Brain className="w-10 h-10" aria-hidden="true" />
               </motion.div>
 
-              <h1 className="text-3xl font-bold mb-2">¡Únete a nosotros!</h1>
-              <p className="text-white/80 flex items-center gap-2">
+              <h1 className="text-3xl font-bold mb-2" tabIndex={0}>¡Únete a nosotros!</h1>
+              <p className="text-white/80 flex items-center gap-2" tabIndex={0}>
                 <Sparkles className="w-4 h-4" aria-hidden="true" />
                 Comienza tu viaje de entrenamiento cognitivo
               </p>
@@ -207,6 +209,7 @@ export default function RegisterPage() {
                   id="register-error"
                   role="alert"
                   aria-live="assertive"
+                  tabIndex={0}
                   className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm"
                 >
                   <span className="font-medium">⚠️ {error}</span>
@@ -401,27 +404,26 @@ export default function RegisterPage() {
             </form>
 
             {/* Divider */}
-            <div className="relative my-6">
+            <div className="relative my-6" role="separator" aria-orientation="horizontal">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-200"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500">¿Ya tienes cuenta?</span>
+                <span className="px-4 bg-white text-gray-500" tabIndex={0}>¿Ya tienes cuenta?</span>
               </div>
             </div>
 
-            {/* Login Link */}
-            <Link to="/login" className="block">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                type="button"
-                aria-label="Ya tengo cuenta, ir a iniciar sesión"
-                className="w-full py-3 text-emerald-600 font-semibold rounded-xl border-2 border-emerald-600 hover:bg-emerald-50 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
-              >
-                Ya tengo cuenta, entrar
-              </motion.button>
-            </Link>
+            {/* Login Link - Usando navigate en lugar de Link anidado (WCAG 4.1.1) */}
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              type="button"
+              onClick={() => navigate('/login')}
+              aria-label="Ya tengo cuenta, ir a iniciar sesión"
+              className="w-full py-3 text-emerald-600 font-semibold rounded-xl border-2 border-emerald-600 hover:bg-emerald-50 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
+            >
+              Ya tengo cuenta, entrar
+            </motion.button>
           </div>
         </div>
 
@@ -431,6 +433,8 @@ export default function RegisterPage() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
           className="text-center mt-6 text-white/80 text-sm"
+          tabIndex={0}
+          role="contentinfo"
         >
           © 2024 Entrenamiento Cognitivo. Todos los derechos reservados.
         </motion.p>
