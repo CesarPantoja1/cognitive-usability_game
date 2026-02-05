@@ -68,16 +68,19 @@ export const GamePage: React.FC = () => {
   };
 
   const handleExit = () => {
-    if (window.confirm('¿Estás seguro de que quieres salir? Perderás tu progreso.')) {
+    const confirmMessage = `¿Seguro que deseas salir del juego?\n\n❌ Perderás los ${session?.score || 0} puntos acumulados\n❌ El progreso de esta partida no se guardará`;
+    if (window.confirm(confirmMessage)) {
       navigate('/training');
     }
   };
 
   if (!gameModel || !session || !gameId) {
     return (
-      <div className="container-center min-h-screen flex items-center justify-center">
-        <Card>
-          <p>Cargando juego...</p>
+      <div className="container-center min-h-screen flex items-center justify-center" role="status" aria-live="polite">
+        <Card className="text-center">
+          <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" aria-hidden="true" />
+          <p className="text-lg font-medium text-gray-700">Preparando tu juego...</p>
+          <p className="text-sm text-gray-500 mt-1">Esto solo tomará un momento</p>
         </Card>
       </div>
     );
@@ -135,17 +138,18 @@ export const GamePage: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="text-sm">
+              <div className="text-sm" role="timer" aria-live="off" aria-atomic="true">
                 <span className="text-gray-600">Tiempo: </span>
-                <span className="font-semibold text-gray-900">
+                <span className="font-semibold text-gray-900" aria-label={`${Math.floor(timeElapsed / 60)} minutos y ${timeElapsed % 60} segundos`}>
                   {Math.floor(timeElapsed / 60)}:{String(timeElapsed % 60).padStart(2, '0')}
                 </span>
               </div>
 
-              <div className="text-sm">
+              <div className="text-sm" aria-live="polite" aria-atomic="true">
                 <span className="text-gray-600">Puntos: </span>
                 <span className="font-semibold text-primary-600">
                   {session.score}
+                  <span className="sr-only"> puntos acumulados</span>
                 </span>
               </div>
 
@@ -191,13 +195,17 @@ export const GamePage: React.FC = () => {
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">
                   Juego en Pausa
                 </h2>
-                <p className="text-gray-600 mb-6">
-                  Haz clic en reanudar cuando estés listo para continuar
+                <p className="text-gray-600 mb-2">
+                  Tu tiempo y progreso están guardados.
+                </p>
+                <p className="text-sm text-gray-500 mb-6">
+                  Llevas <strong>{Math.floor(timeElapsed / 60)}:{String(timeElapsed % 60).padStart(2, '0')}</strong> y <strong>{session.score} puntos</strong>
                 </p>
                 <Button
                   onClick={() => setIsPaused(false)}
                   icon={<Play size={24} />}
                   size="large"
+                  aria-label="Continuar jugando"
                 >
                   Reanudar Juego
                 </Button>

@@ -398,8 +398,9 @@ export const HomePageEnhanced: React.FC = () => {
               size="large"
               icon={<Play size={24} />}
               className="min-w-[280px] bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-700 hover:to-indigo-700 shadow-xl shadow-primary-500/25"
+              aria-label={hasPlayed ? 'Continuar tu entrenamiento cognitivo' : 'Comenzar a entrenar tu mente ahora'}
             >
-              {hasPlayed ? 'Continuar Entrenamiento' : 'Comenzar Ahora'}
+              {hasPlayed ? 'Seguir entrenando' : '¡Comenzar a entrenar!'}
             </Button>
             
             {hasPlayed && (
@@ -409,8 +410,9 @@ export const HomePageEnhanced: React.FC = () => {
                 size="large"
                 icon={<BarChart3 size={24} />}
                 className="min-w-[200px]"
+                aria-label="Ver mis estadísticas y logros"
               >
-                Ver Progreso
+                Ver mis estadísticas
               </Button>
             )}
           </motion.div>

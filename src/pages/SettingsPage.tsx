@@ -47,6 +47,12 @@ export const SettingsPage: React.FC = () => {
         </div>
 
         <Card className="space-y-8">
+          {/* Feedback de guardado automático */}
+          <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 px-4 py-2 rounded-lg" role="status" aria-live="polite">
+            <span aria-hidden="true">✓</span>
+            <span>Los cambios se guardan automáticamente</span>
+          </div>
+
           <section aria-labelledby="accessibility-heading">
             <h2
               id="accessibility-heading"
@@ -98,6 +104,7 @@ export const SettingsPage: React.FC = () => {
                       role="radio"
                       aria-checked={settings.fontSize === size}
                       onClick={() => setFontSize(size)}
+                      title={`Cambiar a tamaño ${size === 'normal' ? 'normal (16px)' : size === 'large' ? 'grande (18px)' : 'extra grande (20px)'}`}
                       className={`flex-1 px-6 py-4 rounded-lg font-medium transition-all touch-target ${
                         settings.fontSize === size
                           ? 'bg-primary-600 text-white shadow-lg'

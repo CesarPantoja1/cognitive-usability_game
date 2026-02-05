@@ -70,10 +70,13 @@ export const FeedbackPage: React.FC = () => {
         >
           <Card className="text-center">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              ¿Cómo te sentiste?
+              ¿Cómo te sentiste jugando?
             </h1>
-            <p className="text-lg text-gray-600 mb-12">
-              Tu opinión nos ayuda a mejorar la experiencia
+            <p className="text-lg text-gray-600 mb-4">
+              Selecciona la emocion que mejor describe tu experiencia
+            </p>
+            <p className="text-sm text-gray-500 mb-12">
+              Tu respuesta nos ayuda a mejorar los juegos
             </p>
 
             <div
@@ -116,8 +119,9 @@ export const FeedbackPage: React.FC = () => {
                 variant="secondary"
                 onClick={() => navigate('/')}
                 size="large"
+                aria-label="Omitir la encuesta y volver al inicio"
               >
-                Omitir
+                Ahora no, gracias
               </Button>
 
               <Button
@@ -125,8 +129,10 @@ export const FeedbackPage: React.FC = () => {
                 onClick={handleSubmit}
                 disabled={!selectedEmotion}
                 size="large"
+                aria-label={selectedEmotion ? "Enviar mi respuesta y finalizar" : "Primero selecciona cómo te sentiste"}
+                aria-disabled={!selectedEmotion}
               >
-                Enviar y Finalizar
+                {selectedEmotion ? 'Enviar y terminar' : 'Selecciona una opción'}
               </Button>
             </div>
           </Card>

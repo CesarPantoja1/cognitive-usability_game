@@ -164,8 +164,9 @@ export const ResultsPage: React.FC = () => {
                 onClick={() => navigate('/')}
                 icon={<Home size={24} />}
                 size="large"
+                aria-label="Volver al menú principal"
               >
-                Inicio
+                Ir al inicio
               </Button>
 
               <Button
@@ -173,8 +174,9 @@ export const ResultsPage: React.FC = () => {
                 onClick={() => navigate('/training')}
                 icon={<RotateCcw size={24} />}
                 size="large"
+                aria-label="Elegir otro juego para seguir practicando"
               >
-                Jugar de Nuevo
+                Practicar otro juego
               </Button>
 
               <Button
@@ -183,8 +185,9 @@ export const ResultsPage: React.FC = () => {
                 icon={<ArrowRight size={24} />}
                 iconPosition="right"
                 size="large"
+                aria-label="Continuar para dar tu opinión sobre el juego"
               >
-                Continuar
+                Dar mi opinión
               </Button>
             </div>
           </Card>

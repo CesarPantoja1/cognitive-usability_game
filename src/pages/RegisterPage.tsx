@@ -206,10 +206,13 @@ export default function RegisterPage() {
                   animate={{ opacity: 1, y: 0 }}
                   id="register-error"
                   role="alert"
-                  aria-live="polite"
+                  aria-live="assertive"
                   className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm"
                 >
-                  {error}
+                  <span className="font-medium">⚠️ {error}</span>
+                  {error.includes('correo') && (
+                    <p className="mt-1 text-xs text-red-600">Intenta con otro correo o <a href="/login" className="underline font-medium">inicia sesión</a> si ya tienes cuenta.</p>
+                  )}
                 </motion.div>
               )}
 
@@ -376,20 +379,22 @@ export default function RegisterPage() {
                 variant="primary"
                 className="w-full py-3 text-lg font-semibold rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-xl"
                 disabled={isLoading || !allRequirementsMet || formData.password !== formData.confirmPassword}
+                aria-label={!allRequirementsMet ? 'Completa los requisitos de contraseña' : formData.password !== formData.confirmPassword ? 'Las contraseñas deben coincidir' : 'Crear mi cuenta'}
               >
                 {isLoading ? (
-                  <span className="flex items-center justify-center gap-2">
+                  <span className="flex items-center justify-center gap-2" role="status" aria-live="polite">
                     <motion.div
                       className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
                       animate={{ rotate: 360 }}
                       transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      aria-hidden="true"
                     />
-                    Creando cuenta...
+                    Creando tu cuenta...
                   </span>
                 ) : (
                   <span className="flex items-center justify-center gap-2">
-                    <UserPlus className="w-5 h-5" />
-                    Crear Cuenta
+                    <UserPlus className="w-5 h-5" aria-hidden="true" />
+                    Crear mi cuenta gratis
                   </span>
                 )}
               </Button>
@@ -406,14 +411,15 @@ export default function RegisterPage() {
             </div>
 
             {/* Login Link */}
-            <Link to="/login" aria-label="Iniciar sesión con cuenta existente">
+            <Link to="/login" className="block">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 type="button"
+                aria-label="Ya tengo cuenta, ir a iniciar sesión"
                 className="w-full py-3 text-emerald-600 font-semibold rounded-xl border-2 border-emerald-600 hover:bg-emerald-50 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
               >
-                Iniciar sesión
+                Ya tengo cuenta, entrar
               </motion.button>
             </Link>
           </div>

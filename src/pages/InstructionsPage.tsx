@@ -100,18 +100,18 @@ export const InstructionsPage: React.FC = () => {
             <Button
               variant="secondary"
               onClick={() => navigate('/training')}
-              aria-label="Cancelar y volver a selección de juegos"
+              aria-label="Volver y elegir otro juego"
             >
-              Cancelar
+              Elegir otro juego
             </Button>
             <Button
               variant="primary"
               onClick={() => navigate(`/game/${gameId}`)}
               icon={<Play size={24} aria-hidden="true" />}
               size="large"
-              aria-label={`Comenzar a jugar ${game.name}`}
+              aria-label={`Comenzar a jugar ${game.name}. Duración estimada: ${Math.ceil(game.estimatedTime / 60)} minutos`}
             >
-              Comenzar Juego
+              ¡Estoy listo, jugar!
             </Button>
           </div>
         </Card>

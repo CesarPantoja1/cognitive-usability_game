@@ -52,6 +52,7 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
           aria-describedby={description ? `${toggleId}-description` : undefined}
           onClick={() => !disabled && onCheckedChange(!checked)}
           disabled={disabled}
+          title={checked ? `${label}: Activado` : `${label}: Desactivado`}
           className={clsx(
             'relative inline-flex h-8 w-14 items-center rounded-full transition-colors',
             'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-400 focus-visible:ring-offset-2',

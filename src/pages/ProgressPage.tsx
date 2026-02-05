@@ -19,9 +19,9 @@ export const ProgressPage: React.FC = () => {
           variant="secondary"
           onClick={() => navigate('/')}
           icon={<ArrowLeft size={24} />}
-          aria-label="Volver al inicio"
+          aria-label="Volver a la página de inicio"
         >
-          Volver
+          Volver al inicio
         </Button>
       </div>
 
@@ -40,22 +40,23 @@ export const ProgressPage: React.FC = () => {
         </div>
 
         {/* Estadísticas principales */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" role="region" aria-label="Resumen de estadísticas">
           <Card className="text-center">
-            <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-3">
+            <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-3" aria-hidden="true">
               <Trophy size={32} className="text-primary-600" aria-hidden="true" />
             </div>
-            <div className="text-3xl font-bold text-gray-900 mb-1">
+            <div className="text-3xl font-bold text-gray-900 mb-1" aria-label={`${progress.totalScore.toLocaleString()} puntos totales acumulados`}>
               {progress.totalScore.toLocaleString()}
             </div>
             <div className="text-sm text-gray-600">Puntos Totales</div>
+            <div className="text-xs text-gray-400 mt-1">Acumulado de todos tus juegos</div>
           </Card>
 
           <Card className="text-center">
-            <div className="w-16 h-16 bg-success-100 rounded-full flex items-center justify-center mx-auto mb-3">
+            <div className="w-16 h-16 bg-success-100 rounded-full flex items-center justify-center mx-auto mb-3" aria-hidden="true">
               <Target size={32} className="text-success-600" aria-hidden="true" />
             </div>
-            <div className="text-3xl font-bold text-gray-900 mb-1">
+            <div className="text-3xl font-bold text-gray-900 mb-1" aria-label={`${progress.accuracyAverage} por ciento de precisión promedio`}>
               {progress.accuracyAverage}%
             </div>
             <div className="text-sm text-gray-600">Precisión Promedio</div>

@@ -35,7 +35,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       font-semibold rounded-xl
       transition-all duration-200
       focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-2
-      disabled:opacity-50 disabled:cursor-not-allowed
+      disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none
+      aria-disabled:opacity-60 aria-disabled:cursor-not-allowed
       touch-target
     `;
 

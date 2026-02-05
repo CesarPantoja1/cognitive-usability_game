@@ -119,10 +119,16 @@ export default function LoginPage() {
                   animate={{ opacity: 1, y: 0 }}
                   id="login-error"
                   role="alert"
-                  aria-live="polite"
+                  aria-live="assertive"
                   className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm"
                 >
-                  {error}
+                  <span className="font-medium">⚠️ {error}</span>
+                  {error.includes('contraseña') && (
+                    <p className="mt-1 text-xs text-red-600">Verifica que las mayúsculas estén correctas.</p>
+                  )}
+                  {error.includes('correo') && (
+                    <p className="mt-1 text-xs text-red-600">Asegúrate de usar el correo con el que te registraste.</p>
+                  )}
                 </motion.div>
               )}
 
@@ -146,7 +152,7 @@ export default function LoginPage() {
                     aria-describedby={error ? "login-error" : undefined}
                     autoComplete="email"
                     className="block w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
-                    placeholder="tu@email.com"
+                    placeholder="ejemplo@correo.com"
                   />
                 </div>
               </div>
@@ -196,18 +202,19 @@ export default function LoginPage() {
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  <span className="flex items-center justify-center gap-2">
+                  <span className="flex items-center justify-center gap-2" role="status" aria-live="polite">
                     <motion.div
                       className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
                       animate={{ rotate: 360 }}
                       transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      aria-hidden="true"
                     />
-                    Iniciando sesión...
+                    Verificando credenciales...
                   </span>
                 ) : (
                   <span className="flex items-center justify-center gap-2">
-                    <LogIn className="w-5 h-5" />
-                    Iniciar Sesión
+                    <LogIn className="w-5 h-5" aria-hidden="true" />
+                    Entrar a mi cuenta
                   </span>
                 )}
               </Button>
@@ -224,14 +231,15 @@ export default function LoginPage() {
             </div>
 
             {/* Register Link */}
-            <Link to="/register" aria-label="Crear una cuenta nueva">
+            <Link to="/register" className="block">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 type="button"
+                aria-label="Crear una cuenta nueva para comenzar a entrenar"
                 className="w-full py-3 text-primary-600 font-semibold rounded-xl border-2 border-primary-600 hover:bg-primary-50 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
               >
-                Crear una cuenta nueva
+                Crear cuenta gratuita
               </motion.button>
             </Link>
           </div>

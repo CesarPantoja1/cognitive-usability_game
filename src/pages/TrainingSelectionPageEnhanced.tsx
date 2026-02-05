@@ -222,7 +222,7 @@ export const TrainingSelectionPage: React.FC = () => {
                         navigate(`/instructions/${game.id}`);
                       }
                     }}
-                    aria-label={`Jugar ${game.name}`}
+                    aria-label={`${game.name}: ${game.description}. Dificultad ${difficulty.label}, duración ${Math.floor(game.estimatedTime / 60)} minutos. Presiona Enter para ver instrucciones.`}
                     className="h-full flex flex-col group relative overflow-hidden"
                   >
                     {/* Background gradient on hover */}
@@ -271,10 +271,11 @@ export const TrainingSelectionPage: React.FC = () => {
                           className="flex items-center gap-1 text-primary-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity"
                           animate={isHovered ? { x: 5 } : { x: 0 }}
                         >
-                          <span className="text-sm">Jugar</span>
+                          <span className="text-sm">Ver instrucciones</span>
                           <motion.span
                             animate={isHovered ? { x: [0, 5, 0] } : {}}
                             transition={{ repeat: Infinity, duration: 1 }}
+                            aria-hidden="true"
                           >
                             →
                           </motion.span>
